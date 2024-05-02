@@ -1,0 +1,24 @@
+the first thing that I'm going to do is
+download Azure storage Explorer from
+this link which I will link below I'm
+going to click download now
+all right as you can see it's in my
+downloads folder the next thing that I'm
+going to do is open a Powershell window
+with admin privileges
+the next thing that I'm going to do is
+I'm going to go into that directory and
+that is downloads folder right and as
+you can see I have my storage Explorer
+here I'm going to invoke this explore
+exe with few commands the first one is
+very
+silent and the next one is restart
+the last one is all users then wait for
+a minute or two you'll be able to see it
+in your start menu
+as you can see you have installed Azure
+storage Explorer in a silent way hope
+you learned something new today
+subscribe if you haven't and thanks for
+watching

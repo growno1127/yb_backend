@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pydantic
+sqlalchemy
+async-exit-stack
+async-generator
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart
+python-dotenv
+requests

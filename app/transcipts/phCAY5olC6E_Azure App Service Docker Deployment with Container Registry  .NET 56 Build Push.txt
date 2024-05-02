@@ -1,0 +1,203 @@
+hello everyone today I'm going to show
+you how to host your Docker image on
+Azure app service
+the first thing that we need to do for
+that is generating a Docker image from
+an asp.net application let me do that
+now for this you should have.net
+framework installed and Docker installed
+on your machine I have both of them
+installed and I'm going to run this
+script that will generate the docker
+image for me let me show you my Docker
+UI as you can see I have installed
+Docker and I don't have any images or
+containers all right now let me open the
+Explorer so that I can see my directory
+structure now I'm going to CD into my
+source folder
+and then I'm going to run this script
+here and this will generate
+the web application for me as you can
+see that's done the next thing that I
+want to do is adding the docker file for
+that I'm going to press Ctrl and P like
+this and then I'm going to
+add this character here and you can
+search for Docker and you will see this
+here add Docker files to workspace I'm
+going to select that and this is a
+asp.net application asp.co application
+so I'm going to select that the host
+operating system that I want is Linux so
+I'm going to select that and the default
+Port that this dotnet application
+exposes is 5000 so I'm going to keep it
+like that I'm pressing enter all right
+now it is asking me whether I want a
+Docker compost file with this I'm
+selecting no all right my Docker file is
+ready as you can see vs code just
+generated one for me as you can see the
+directory structure is wrong because my
+Docker file is in that Source folder so
+I'm going to move that Docker file to
+one
+like this and then I'm going to close
+this Docker file now what I'm going to
+do is I'm going to generate the docker
+image for that I'm going into that
+directory where the docker file
+resides and then I'm going to run this
+command Docker build and the image name
+is going to be net 5. web app and then
+the directory where the docker file is
+seen is the current directory so I'm
+going to add period here now it's
+fetching the image layers all right
+my image is ready now let me go to my
+Docker UI and show you the image and it
+is here now if I want to run this image
+and see the results I can just call
+Docker run the port
+the port you have to specify so
+basically if you look here this is the
+port of your host so basically this will
+be the port that Docker will use to run
+on your machine and this is the port
+that the application that resides in the
+container exposes so you have to pass it
+in this notation here
+so I'm going to enter it like this and
+my image name is net5 web app all right
+my application is running now let me
+open up my web browser now let me go
+into that application as you can see we
+are getting the welcome image of
+that.net file application all right our
+Docker image is ready as you can see the
+next thing that I'm going to do is I'm
+going to create a container registry on
+azure
+so for that I'm going into my Azure
+portal and I'm going to click
+on create a resource and I'm going to
+search for container
+registry like this and then I'm going to
+click create
+I want a new Resource Group for it so
+let's say docker
+and register name is going to be my
+registry
+say it's just uh year and month here the
+reason that I want is southeast Asia and
+I don't want any availability zones for
+this container registry
+and it's going to be basic tier and I
+don't want any private access to this
+container registry since this is a
+sample application so let me go ahead
+and click create
+we are creating this container registry
+because there should be a way for us to
+store our images on cloud
+when we create our web application we
+need to direct our web application to
+pull the image from a place where it can
+be accessed for example if you are
+keeping the image on our machine the
+upsell the app service cannot access
+that file so that's why we are creating
+this container registry as you can see
+the container registry is ready now let
+me click on go to Resource all right the
+next thing that I'm going to do is I'm
+going to log into this container
+registry from my Azure CLI and I have
+already logged into this account from my
+Azure CLI I can just type AC group
+please stand this will list all my
+resource groups for example if you
+haven't already logged into this account
+you can just type AC login and login
+now for logging into this container
+registry what I'm going to do is I'm
+going to type
+acacr for Azure container registry and
+login the name of the registry is my
+registry
+221 10 all right login is succeeded the
+next thing that I should do is
+I can list the images that I have in my
+machine and this is that image that we
+have just created
+I have to tag this image with this name
+here so for that what I'm going to do is
+I'm just going to call Docker tag and
+the image name that I have on my machine
+is dot Net 5 web app the next parameter
+here is
+this thing and I'm going to paste it
+here
+like this and I'm going to add
+and then I'm going to complete this URL
+azure
+CR
+dot IO
+and knit five
+web app
+all right I have just tagged the image
+that we have created the next thing that
+we can do is we can just push it
+to my registry this is how I do it I'm
+just going to copy this tag here and
+paste it here and
+as you can see we are pushing our
+newly created image now that is done let
+me go back to my Azure portal and go
+into repositories here you can see the
+image that we have pushed to our
+container registry all right the next
+thing that I'm going to do is I'm going
+to enable admin user from this access
+keys because I want to pull this
+container images from my web application
+for that I'm just going to enable it
+from here and I'm going back to my
+Resource Group and I'm going to click
+create
+and I'm going to select this web
+application create option here then I'm
+going to name it my docker
+app
+something like this and it is going to
+be Docker container and a Linux one
+and the region is
+Southeast Asia
+and this I will keep as default
+and then I'm going to select the image
+source so here we have an option to
+select Azure container registry I'm
+going with this option here
+and it has loaded my container registry
+and also the image as well I don't want
+to add any startup commands here I'm
+going to click next yeah I don't want
+any application
+um insights instances attached to this
+and then finally it's validating I'm
+going to click create all right now let
+me click on go to resource
+and um
+yeah as you can see my web application
+is ready I'm just going to click on this
+as you can see we have successfully
+deployed the docker image that we have
+on our local machine to
+Azure app service
+hope you learned something new today if
+you have any questions or comments leave
+them down below and if you want to be
+updated with my future videos that I'm
+planning to do please subscribe to my
+channel and thanks for watching

@@ -1,0 +1,256 @@
+we're here at next24 with Richard serer
+none other than our chief evangelist at
+Google Cloud Richard thank you so much
+for being here with us thank you so much
+for inviting me just to kick it off yeah
+we do next every year what's your
+favorite part of coming to next what
+really excites you about this I mean
+selfishly it's I'm not just pandering
+it's seeing people like you and the team
+like we have a big team and we're all
+over the world and this is that one rare
+chance we get to all be in the same room
+at the same time and hang out together
+so I love all the people coming here but
+they're second to uh the team you hear
+that team for number one in his heart so
+like I said The Kino was amazing you you
+know maybe I'm biased but I feel like
+every year they get better you and Chloe
+did an amazing job hosting really
+inspirational uh makes me want to be a
+better developer and developer advocate
+so you kicked it off strong with uh
+Gemini 1.5
+uh provision and you showed how we can
+get insights from video but also from
+huge databases so can you showare some
+of these amazing numbers that you talked
+about yeah I mean that huge context
+window we keep talking about all these
+tokens I can pass in just the idea of
+and we could give it the 75 minute video
+we gave of last year's keynote and
+actually get back details of who spoke
+when and when did we show a demo like
+it's not just reading a transcript it's
+actually understanding the video which
+is amazing so I just love this idea that
+be able to pass in so much code or giant
+documents or whatever it is or one of
+those long emails our bosses sends us it
+can process the actual whole thing I
+think it's pretty cool to be able to
+think about not having to over architect
+these really complicated Solutions maybe
+it's just one Gemini call and I don't
+know we should be aiming for Simplicity
+and I think I'm seeing more and more of
+that which is great yes I love how you
+talked about simplifying the the
+complexity of gen which is amazing and I
+know selfishly also that's a great
+feature that I love use when there's a
+huge code base and you just need a quick
+summary right yeah exactly who can
+process all that stuff I just summarized
+give me the gist that's all we need yeah
+Gemini is changing the way that
+developers deliver software and you
+mentioned a few key ways in which that's
+happening right better coding better
+platforms and better Ops can you talk to
+me a little bit about each of those yeah
+the better coding is a good part of a
+how do I just again build how do I
+complete my code add better test like
+just better quality can I ship it faster
+can I get better value from that so I
+think we saw a lot of that in the Kino
+with cool Frameworks like nextjs and
+calling it The Gemini end points this
+isn't just Google tech I want everybody
+using all kinds of languages using this
+so that's the exciting part is we're not
+really a uh homogeneous Vibe here for
+developers like use your favorite IDE
+use your favorite language I think
+that's great so you need the coding part
+but then there's a big platform piece
+like I need how am I going to serve up
+models what are the right models how do
+I do this retrieval augmented Generation
+stuff like how do we do that really
+really well we've SE we saw some great
+examples in the keynote all the
+breakouts of yeah let's just make
+platforms better let's have them be
+smarter let's have them be easier
+managed we saw demonstrations from uh
+folks on gke side of make it easier to
+run gke with AI like help us understand
+what's going on I love that and then
+yeah the Ops part troubleshooting is
+still not easy and now we're just
+generating more data so if I can use AI
+to sift through piles of logs or figure
+out troubleshooting you and I know if if
+the favorite site you go to is offline
+you just go to another one so I got to
+get people back online quick so it seems
+like having AI it's making the dev
+better the platform better the Ops
+better and we're only getting started
+which is great yeah it's awesome and two
+of my favorite things that you mentioned
+too is Gemini cusis which again I use
+daily almost now and uh Gemini Cloud
+assis which is also I'm excited about
+that I mean that's uh it's one thing to
+do ops it's another to do ops that
+understand you like in our example we're
+saying hey who who broke the firewall
+and it was me I don't like being blamed
+publicly but at least you have better
+context versus just like generically
+here's what you could look at so yeah
+that personalization that's the secret
+to this next stage of AI nice yeah I
+totally agree and you learned your
+lesson right you're not going to break
+the firewall again yeah not in front of
+my boss now wonderful okay so another
+really interesting thing that's super
+exciting is Gemini IG query and all of
+the amazing features that come with that
+you can build apps and data agents with
+multimodal AI and I've actually tried
+this out as well so what's your favorite
+part of that like talk through us a
+little talk us through that a little bit
+Yeah I think the most powerful part is
+it's all in one environment like that
+big query Studio environment where I'm
+not only writing queries I'm getting it
+generating queries it's doing the
+multimodal I can query against images or
+text I'm not bouncing between different
+things even we showed continuous queries
+where you can keep running this and big
+query will actually host your query just
+keep running it and checking like that's
+super powerful stuff that back to the
+simplification a few years ago this was
+like 10 products now we're sitting going
+maybe it's just one thing that just
+makes this easier so I just love how big
+query is becoming the center of this and
+making it easier to do really
+sophisticated things yeah and I
+reiterate that it's helping devs deliver
+software more simply quicker and
+honestly just in a more enjoyable way
+because of you know less context
+switching things are being done for you
+automation completely l l exactly and of
+course you know something that's being
+talked about all the time now is rag
+it's not just a towel that you clean
+your floors with retrieval augmented
+generation of course uh it helps
+optimize the output of our
+llms can you give me a little Deep dive
+into Rag and how are we using it with
+our LMS yeah I mean I think when you see
+there's I think what three ways people
+can make the output of a model better
+you can give it better prompts stuff
+more stuff in there and direct it you
+can do fine tuning and actually take a
+model and like train it with your own
+data that's expensive and can have its
+own thing but instead this retrieval
+augmented generation says can I use the
+base model but then dip into another
+data source to complement that input so
+we're making it a little easier to say
+yeah give me a data source and we'll
+chunk it all up and handle it for you
+and then when you make those queries you
+have more trust in the output because
+it's actually looking up your data
+complimenting that with what it's
+looking at so I think as people want to
+have trust in this this can't just be a
+play thing like you and I will be so
+frustrated if everyone just uses gen for
+fun and not to actually get to ruction
+like I of want to just use this in Dev I
+want to use this all the way so you have
+to trust it though and so the tools
+we've been doing the support now across
+almost every Google Cloud database for
+Vector search and things like that super
+powerful we're not saying it's only one
+way to do it there's a few ways but
+we're making it simpler and I love what
+you said about increasing that trust
+right cuz that's what this does make
+sure that you can trust the answers that
+you're getting just a little bit more
+yeah I know that you love all your
+children equally right all of these
+announcements are amazing yeah do you
+have a secret favorite not so secret I
+mean from this week's things I am
+excited a lot about the codus as Cloud
+as to speak I think there's a bringing
+AI to how we develop and operate
+software there's so much room to make
+this better like you and I still and at
+least I pretend to be a developer still
+like any assistance I can get where it
+lets me focus on the fun parts of it and
+I don't have to do some of the other
+pieces I care about the other pieces but
+somebody smarter than me in this case a
+robot should be doing some of this for
+me or helping me troubleshoot so I think
+unveiling Cloud assist showing how code
+assist is now getting smarter having
+able more context it's going to be such
+a game changer right now I'm I'm excited
+for what the next 10 years of software
+looks like yes I totally agree it really
+does make our lives easier as developers
+I've been using it and it's so funny
+because sometimes I'm doing something
+and we'll forget that we have this at
+our fingertips now right because it's
+new and exciting so we'll say oh did you
+try using Cod assist for that and say oh
+right let me check that out so well
+context switching I me when you and I we
+go back and I have to go jump to search
+results I have to go jump to a weird
+blog post I got to do stack Overflow
+those are all great sources but it gets
+me out of my flow and so we I think
+obsessed of keeping people in a flow
+state so you just do better work longer
+I'm I'm for that yeah exactly and it
+feels more like play instead of work
+right this should be fun this is the
+best time to be doing software we should
+be having a blast with this well thank
+you so much for being here with us today
+it's a pleasure as always welcome and
+your Dev keynote was of course recorded
+So make sure to check that out and keep
+watching because we're going to have a
+lot more great interviews and
+information about talks coming at you
+love it thanks
+[Music]
+Debbie

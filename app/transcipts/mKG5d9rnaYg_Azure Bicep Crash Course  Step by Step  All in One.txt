@@ -1,0 +1,357 @@
+all right the first thing that you
+should do is installing the tools that
+you need you should install vs code
+bicep extension and as you CLI the
+latest version would be better a version
+that is greater than 2.2 and after that
+you can install bicep using this AC
+bicep install I believe you have already
+done this setup so let's get started and
+here I have the most simple bicep file
+this will deploy only one resource and
+that resource is going to be a storage
+account as you can see here and now
+let's understand the structure of this
+file as you can see I'm defining a
+resource this is a keyword in bicep and
+I'm giving a symbolic name for the
+resource that I'm creating and I'm
+calling it a search account I can call
+it something like storage account123 as
+well and I'm defining the resource type
+here and this has two things as you can
+see this is the the type of resource
+that I'm creating and this is the API
+version and after that I am setting the
+properties of this resource the name is
+storage and location in Southeast Asia
+and the SKU is going to be locally
+redundant and storage V2 and accessedia
+is hot so let's deploy this one and get
+an understanding on how it all works
+so here I have prepared an script A
+Powershell script that will first create
+a resource Group in Azure and then it
+will deploy the script that I have
+created here so let's just try to do
+this and see how it works so I'm going
+to copy this code here and paste it in
+my Powershell
+and I have deployed my Resource Group
+let's just try to
+do this as well
+now let me open up my Azure portal here
+and refresh
+yeah as you can see I have the resource
+Group and you can see I have deployed
+this stretch account
+now let me switch back to my visual
+studio and let's understand variables on
+bicep now let's say I want to reuse this
+storage name what I can do is I can just
+cut it then paste it here
+right like this and I can make it a
+variable let's call it storage name and
+this is equal to that and let's try to
+put it here now we have used a variable
+to store the storage name
+and also you can do string
+interpolations as well let's say you
+have a prefix that you want all your
+resources to have you can add the prefix
+like this
+I'm going to call it mine prod for
+example and here what I'm going to do is
+I'm going to add an interpolate this
+prefix
+to my strategic account name so let's
+add that
+as you can see I have done that let's
+try to deploy this one again
+all right that's done let me open up my
+Azure portal and refresh it yeah as you
+can see I have created this storage
+account and it has fraud as a prefix now
+let me go back
+to my
+VF code and these variables these things
+they don't have to be just values like
+this they can be erased as well so what
+I'm going to do now is I'm going to um
+Define an array I'm going to call it
+regions let's
+um and let's put a few regions here as
+you can see it looks like JavaScript
+arrays but it doesn't have a comma what
+I'm going to do now is I'm going to Loop
+through these items in my array and I'm
+going to create multiple storage account
+in these regions now let me show you the
+Syntax for Loops in bicep
+the first thing that you should do when
+you start with a loop is
+um
+add these scrub brackets and then you
+can start to write the loop so here what
+I'm going to do is I'm going to Loop
+through all these items here let me call
+it region the item in this array and and
+I'm going to add in and regions I'm
+going to reference this variable here
+now let me add a colon here to complete
+this loop I still see an error and that
+is because I haven't referenced this
+region
+um parameter here in my object anywhere
+so what I'm going to do now is I'm going
+to copy this and paste here in location
+replacing Southeast station that I
+already have and that
+should fix it now if I deploy this one
+there will be three storage accounts but
+that's one issue and that is I have only
+one name specified and we can we can't
+have multiple and we can't have multiple
+storage accounts with the same name so
+for that what I'm going to do is I'm
+going to get an index from this Loop so
+for that I can just apply syntax like
+this
+and get an index and then I'm going to
+append that index to my search name and
+for that what I'm going to do is I'm
+going to use string interpolation I can
+just append the eye
+all right now let's try to deploy this
+end see what happens as you can see the
+deployment is a success now let me go to
+my Azure portal and yeah as you can see
+I have three storage accounts and they
+are in three regions as well so let me
+switch to some review
+yeah as you can see
+um this is my better representation of
+it
+awesome and let me show you now how
+functions work in bicep now let me clear
+this Loop and go back to the code that I
+had before
+let's say I want to deploy
+um to this region that is the East UF
+and this is the first item in this array
+and for that what you can do is you can
+use a few inbuilt functions let's say
+yeah I'm going to use this first
+function I'm going to pass in this
+reference here like this you can use
+functions there are a lot of functions
+that you can use in bicep let me show
+you
+if you go here this I will link below
+and there are many functions you can
+concatenate strings and you can see
+whether something contains and there's a
+lot of things that you can do like this
+now let me go back to my visual studio
+code and you understand now what
+functions are and the use of it as well
+now let's understand the if conditions
+in bicep and before that let me do a
+little bit of Cleanup in the file that
+you're working on so let me change the
+name to today's date
+like this
+now let's say based on this prefix here
+that we have defined you need to change
+the the deployments so what I'm going to
+do is I'm going to change this name
+um like this and I'm going to create a
+copy of it and I will change the name as
+well let's call it Dev
+all right now
+to add a conditional deployment so what
+you should do is you should add this if
+condition like this and I'm going to
+copy this and paste the same here I'm
+going to change this to Dev so let's now
+and also I don't want this region Let's
+uh let's go into the last region in the
+array when I do a Dev deployment so
+let's change this to Dev as well
+now let me run this end see what happens
+all right the deployment is done let me
+go to my Azure portal and go to list
+View
+and see what happens as you can see I
+have Dev here and it's deploying no zero
+so the condition worked
+all right I have just cleaned up the
+bicep file now we have the simplest
+setup that we had initially the next
+three things that you're going to
+understand is modules parameters and
+outputs you can think of a module in
+bicep as another bicep file so what I'm
+going to do now is I'm going to create a
+module I'm going to create a new file
+let's call it storage dot bicep
+and I'm going to copy this script and
+I'm going to paste it here in the
+storage file now we have successfully
+created a bicep module this is enough
+you can invoke it from this script file
+if you want but let me make it a little
+bit more interesting what I can do is I
+can just introduce a parameter a
+basically a input for this module so
+what I can do is I can just Define
+parameter here so these are the inputs
+for this module so what I'm going to do
+is I'm going to add the storage name
+like this and it's going to be a string
+and I can add constraints like Min
+length and max length now I'm going to
+copy this and paste it here so that this
+will be my storage name in this module
+so these are the inputs to the module so
+the next thing that I'm going to show
+you is the outputs from this module so
+what you can do is you can just add this
+output keyword which is going to be a
+object type and this will be equal to
+storage account one
+properties and primary endpoints so I
+have created this module successfully
+now let's go back to script.bicep and
+clear this up and for consuming modules
+what you can do is you can just use this
+keyword module and I'm going to call it
+storage
+module and the name is as you can see
+storage dot bicep and it is getting the
+name from this file right as you can see
+I can
+name this module um let's call it
+storage
+module as well
+and since I have deployed a parameter
+here I can pass it
+from here I can just use
+the name that I have
+added that and that is storage name
+like this I'm going to call it
+um
+awesome
+so let me save it
+and let's deploy this and see what
+happens
+now as you can see I'm getting an error
+and that is because I have added this
+max length
+parameter here I don't want it to
+validate for now let me remove it and
+let's try again
+all right a deployment is now done let
+me go to my Resource Group and let's
+refresh it as you can see I have
+deployed this storage account from a
+module The Next Step that we are going
+to learn is the concept of Scopes in
+bicep now let me open up bicep official
+documentation and go into this scope
+section as you can see there are four
+types of Scopes in bicep not in bicep in
+Azure in general so if you go here into
+Resource Group section you can specify
+like this target scope is equal to
+Resource Group and also this is the
+default scope and that's why we haven't
+specified this in the bicep files that
+we've been working on and this setting
+here tells bicep the types of resource
+that we are planning to include in the
+bicep file that you're going to write as
+you can see it could be Resource Group
+subscription Management Group or tenant
+what I'm going to do now is I'm going to
+specify subscription level scope and
+then I'm going to deploy a resource
+Group and a storage account inside of
+that Resource Group so let's get started
+now let me switch back to my vs code and
+specify
+the target scope you can do it with this
+Command right here and as you can see
+these are the options that are available
+for you so I'm going to select this
+subscription level
+and what I'm going to do now is that I'm
+going to create a resource Group in this
+subscription and for that I need a name
+so I'm going to specify this variable
+here I'm going to call it RG name and
+I'm going to call it deploy it from
+bicep Resource Group and then I'm going
+to specify the resource Group
+I'm going to name this my new group
+and the the resource type will be
+Resource Group
+as you can see and then the API version
+I'm going to go with this one and I can
+specify the name of the resource Group
+since I have specified that here I can
+just reference that and the location is
+still going to be South East
+Asia like this and I should remove this
+comma as well because that's not valid
+in bicep and I have declared this
+Resource Group like this as you can see
+I'm getting this error here and let's
+see what that is this Scopes
+subscription is not valid for this
+module like as I said before we are when
+we are setting this target scope here we
+are telling bicep how the types of
+resources that you're planning to
+include in our bicep file so what I'm
+going to do now is specify the scope you
+can specify it like this with scope
+parameter and I'm going to then since
+this is a resource Group I'm going to
+use this function the name of the
+resource Group I'm going to get it from
+this symbolic variable here as you can
+see the error is gone now let's try to
+deploy this so I'm going to deploy this
+with this command it's Daisy deployment
+sub create and this is the subscription
+ID and I'm specifying the template file
+here so let's try to deploy this now as
+you can see the deployment is done let
+me go to my Azure portal and as you can
+see here we have the resource Group that
+we have deployed and inside of that
+Resource Group we have the storage
+account today we have learned how to use
+the CLI and the resources and the
+conditional deployments variables and
+parameters and modules and functions as
+well and finally we learned Scopes as
+well now let me tell you the next steps
+that you can take when it comes to
+learning bison here if you go to the
+best practices page in the official
+documentation for bicep you will find a
+lot of best practices that you can learn
+when it comes to parameters and
+variables and naming conventions and
+resource definitions as well and if you
+want to learn more there's this
+Microsoft learn module as well I will
+link this down below and this concludes
+this video hope you learned some cool
+stuff today and if you have any
+questions or comments you can leave down
+below and if you want to be updated with
+what I'm doing you can subscribe to my
+channel as well and thanks for watching

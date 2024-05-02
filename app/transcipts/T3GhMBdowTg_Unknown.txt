@@ -1,0 +1,324 @@
+hello everyone in this video we are
+going to learn about Azure Arc with
+Azure Arc you can manage your non-azure
+resources like your kubernetes cluster
+on-prem virtual machines and SQL servers
+on Azure as if they're running on Azure
+in a hybrid world like today this is a
+very powerful feature to have if I
+scroll down a bit
+we have the features that Azure Arc
+supports as I said it helps you manage
+centrally a wide range of resources like
+kubernetes clusters SQL servers and
+Linux or Windows Virtual machines and
+Azure application Services as well I
+will get into this in a minute and also
+you can manage the life cycle of virtual
+machines that are running on Azure stack
+HCI the hyper converged infrastructure
+service from Azure and also VMware
+environments as well and also you can
+meet the governance requirements of
+these non-ajo resources through Azure
+policy and finally we can use Azure
+role-based Access Control to provide
+access to these non-natural resources
+through Azure portal now if I scroll
+down we have one more interesting
+feature that Azure Arc enables us to do
+and that is azure awk enabled
+application Services usually what Azure
+Arc does is that it will bring your
+non-azure or your on-premise or could be
+a different Cloud as well these
+resources into Azure but with Azure Arc
+enabled application Services you can
+bring Azure services like app Services
+function apps and logic apps from Azure
+to other non-azure infrastructures for
+example how this happens is that let's
+say you have a kubernetes cluster
+running on premises you can connect that
+kubernetes cluster to Azure and after
+connecting when you create these
+Services instead of selecting the region
+for this deployment you can direct you
+can select the kubernetes cluster that
+you have in your on-premise environment
+so Azure will deploy Azure services like
+app Services function apps and Logics
+apps to that environment after the
+deployment you'll be able to see that
+the containers are popping up in that
+kubernetes cluster and you don't have to
+pay for these Services because you are
+running the services in your on-prem
+environment and you can centrally manage
+everything now we have a better
+understanding of what Azure Arc is let's
+get right into a demo so that you will
+have a better understanding of this
+service what I'm going to do is I have
+this virtual machine that is running in
+my local machine it is a Windows Server
+virtual machine and I'm going to connect
+this virtual machine to Azure so that I
+can manage these using Azure portal and
+if you want to try this out and if you
+don't have a virtual machine running in
+your computer or if you don't have
+hyper-v installed you can use another
+Azure virtual machine for doing this
+you can go into this page here I will
+link this down below and you can stop
+certain Services running on that virtual
+machine and you can connect that virtual
+machine as a Arc enabled server to azure
+there's no really point of doing it
+unless it is educational thing because
+you don't have to connect an Azure
+virtual machine as a Arc enable server
+to azure
+and when a server is connected to Azure
+it becomes an arc enabled server and
+it's treated as a resource in Azure each
+Arc enabled server has a resource ID a
+managed identity and is managed as part
+of a resource Group inside of a
+subscription and as I said Arc enabled
+servers benefit from standard Azure
+constructs such as inventory policy tags
+and Azure Lighthouse now let me go into
+Azure portal and here I have created
+this Resource Group now I'm going to
+create the representation of this
+virtual machine on Azure for that let me
+go into create a resource and search for
+Arc as you can see we have a few options
+here we have kubernetes and few other
+options I'm going to go with servers
+because we are connecting a virtual
+machine to Azure now let me click create
+and we have few options yes you can see
+we can connect a single server and
+multiple servers and you can add servers
+from update management and these are
+preview features I'm gonna go with add a
+single server you should know few things
+before going ahead and connecting your
+service charge measure we have to
+whitelist few Services because these are
+the endpoints that your virtual machine
+will connect to after configuring the
+virtual machine has a Arc enabled server
+you should whitelist these and you
+should have local administrator
+permission in your local machine to run
+this script and also you can connect to
+this device using a private endpoint
+through virtual Network I'm not going
+into this in this video now let me click
+next here and now we have to specify the
+resource Group I'm going to go with
+Azure Arc demo the resource Group that
+we have created for this demo and then
+we have to specify the region I'm going
+to go with the closest region to me in
+the operating system it's a Windows
+Virtual Machine that I have here and I'm
+going to connect through a public
+endpoint not a proxy server not a
+private endpoint I'm going to click next
+and as you can see here we have a few
+default tags available for this resource
+I'm going to keep the messages and now
+we have this script that we should run
+in our with your machine to connect that
+to Azure I'm going to copy this script
+here and then I'm going to go into my
+virtual machine and then open up
+Powershell with administrator privileges
+and then I'm going to paste this script
+here as you can see it is downloading
+all the other scripts that is required
+for connecting this virtual machine to
+Azure once this configuration is
+complete the connected machine which is
+this virtual machine right here sends a
+regular heartbeat message every five
+minutes to azure when the heartbeat is
+not received Azure portal will display
+this Arc enabled server as a offline
+server now as you can see here it wants
+me to log in using device login I'm
+going to copy this link here and then
+I'm going to paste it here all right now
+let me insert this code as well all
+right now let's wait for one or two
+minutes and come back alright as you can
+see we have successfully onboarded the
+resource Glazer now let me go into Azure
+portal and resource groups and Azure Arc
+demo and here we have my local virtual
+machine represented on Azure now if I go
+in as you can see the status is
+connected and there are a few other
+information here as well we have the
+computer name and operating system and
+manufacturer model and all that on the
+left we have settings and operations and
+as I said we can use these features like
+extensions policies update management
+and all these to manage our non-azure
+resources as if it was an Azure resource
+now in this video I'm going to show you
+three things the first one is I'm going
+to show you how you can use Azure policy
+for managing compliance of these
+non-natural resources and then I'm going
+to show you how you can use Azure log
+analytics workspace to view events of my
+non-natural virtual machine
+finally I'm going to show you how you
+can install IIs using Azure portal on
+this virtual machine using custom script
+extensions now let me go into home and
+our Resource Group and I'm going into
+policies to show how you can create
+policies and view compliance and as you
+can see I do not have any policy
+assignments for this Resource Group I'm
+going to click on assign policy and the
+scope is this Resource Group and I can
+select the police definition here since
+I'm planning to connect this virtual
+machine to Azure log analytics workspace
+I can add that policy so that we can see
+the compliance of it configure Azure Arc
+enabled Windows machine with log
+analytics agent connected to default log
+analytics workspace and this is the
+policy that I'm going to introduce to
+this Resource Group now let me go ahead
+and create this policy and it usually
+takes around 15 to 30 minutes to
+validate this policy against the
+resources that I have in my Resource
+Group as you can see it is not started
+let's come back to this after doing our
+log analytic workspace configuration and
+custom script extension demo that I'm
+planning to do now I'm going into the
+resource Group again and the server and
+if I go into extensions as you can see I
+do not have any extensions installed
+already now I will click add to install
+a new extension first I'm going to
+install log analytics agent on this
+virtual machine I'm going to click next
+and here we have to specify the
+workspace ID and a workspace key of A
+Azure log analytics workspace now let me
+create a new log analytics workspace I'm
+going to click create and we can specify
+the resource Group I'm going to go with
+the existing Resource Group and then
+region
+I'm going to name this Arc demo
+workspace
+and I'm going to click create
+all right our log analytics workspace is
+in place now I'm going to that and if I
+go into agents management and as you can
+see we have zero Windows computers
+connected to it and zero Linux computers
+connected to it because we have just
+created this and I'm going to copy this
+workspace ID and primary key and I'm
+going to paste them here
+all right I'm going to review and create
+this log analytics Azure extension
+this can take around three to five
+minutes let's come back after this is
+complete all right as you can see we
+have successfully installed the
+monitoring agent in my virtual machine
+now if I go into the workspace and logs
+and let's see let's close this and we
+have a new table here heartbeat let's
+see what we have in there as you can see
+here we have four heartbeats received
+from my virtual machine and as you can
+see we have a lot of information here if
+I go into The Columns of this table we
+have OS information and also the remote
+IP country and all that information as
+well and this is how you can connect a
+non-natural virtual machine through
+Azure walk to Azure log analytics
+workspace the final thing that I'm going
+to show you is installing IIs in my
+virtual machine through Azure portal now
+let me go into the resource Group again
+and I'm going into
+The Arc enabled server and and then I'm
+going into extensions as you can see we
+have one extension already installed and
+then I'm gonna add this custom script
+extension for Windows I'm going to click
+next now here we can upload the script
+that we want
+our virtual machine to run now I have
+already uploaded a script of Powershell
+file to this storage account now if I go
+into that storage account it has a
+container one container and inside of
+that container it has this script now
+let's see whether I can review that
+if we're going to edit
+as you can see it only has two lines it
+just Imports the the server manager and
+add this Windows feature now let me go
+back and select that Powershell
+script
+all right and I do not have any
+arguments for the script here
+let me go ahead and review and create
+this custom script extension for Windows
+this will take few minutes let's come
+back after that as you can see the
+custom script extension deployment is
+complete now if I go into the virtual
+machine and
+so a manager and let's try reopening
+this
+as you can see here we have IIs
+installed in the virtual machine and let
+me try to access it
+yeah that works now as the final step
+let's go into the resource Group and see
+whether we have our policy compliant
+with our virtual machine now let me go
+into home and Arc demo and policies as
+you can see it is 100 compliant because
+we have installed lock analytics
+extension in my virtual machine and that
+is why this is compliant this is the end
+of this video and in this video I wanted
+to show you what Azure Arc is and what
+Arc enabled application services are we
+saw how to connect a on-prem hyper-v
+machine to Azure we saw how Azure policy
+works with Azure Arc enabled servers and
+how to connect a virtual machine to
+Azure log analytics workspace and
+finally we saw how to run a script using
+a custom script extension and we
+installed IIs on my arc enabled server
+if you have any questions or comments
+please let me know down below and don't
+forget to like this video And subscribe
+if you learned something new today I
+will see you with another video like
+this thanks for watching

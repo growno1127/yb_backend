@@ -1,0 +1,261 @@
+hello everyone in this video we are
+going to see how Azure backup works by
+backing up an Azure virtual machine
+Azure backup is a service that you can
+use to backup the virtual machines that
+you have on your own premises also you
+can backup Azure VMS and other file
+shares managed disks and as in the list
+you have many other services you are
+doing this to keep your data safe from
+let's say ransomware attacks or any
+compliance reasons
+now let's go ahead and create a virtual
+machine on Azure so that we can
+configure backup I have created this
+small script to create the virtual
+machine let me run this now my virtual
+machine is now in place let me go to
+Azure portal and click refresh
+as you can see we have the virtual
+machine what I'm going to do is I'm
+going to RDP into it now let me go into
+file explorer here on the C drive I'm
+going to create a file
+now I have changed the virtual machine I
+have made a change to the C drive and
+now let me close this and I'm going back
+I'm going to operations and backup
+section we have two approaches for us to
+configure backup for this virtual
+machine one of the ways is that
+using this wizard here to create the
+recovery services Vault and create the
+backup we need a Recovery Services Vault
+to keep the backup data when you do this
+you also need a backup policy the
+default policy has been selected you can
+click on this and change the policy
+today I'm not going to use this wizard
+here I'm going to create a new Recovery
+Services Vault first then I will create
+the backup from that now I'm going into
+the resource Group again and I'm going
+to click on Create and then as you can
+see we have backup and site recovery I'm
+going to click create
+this is the service that keeps our
+backups and if we are working with site
+recovery you will have that replications
+as well today our topic is backup now
+let me create a Recovery Services Vault
+let's call it recovery service 1 and
+since I have created my virtual machine
+in Southeast Asia region I'm going to
+select that
+and then I'm going to go ahead and
+create this resource all right let me go
+in and here we have in the getting
+started section we have backup and site
+recovery and we have other section
+protected items and when it comes to
+protected items we have backup items and
+replicated items in this video our
+Target is backup and backup items I'm
+going to backup and here we can select
+the place where there are workloads are
+running
+since my virtual machine is running on
+Azure I'm going to keep this as it is
+and we have few options here we can
+backup virtual machines as your file
+shares virtual machines with SQL server
+or subhana installed I'm going with
+virtual machine and I'm going to click
+on backup
+now we can configure the backup policy
+let me click on create a new policy and
+you can name the policy and here we have
+the configurations we can change the
+backup frequency you can go from daily
+to weekly when you're selecting weekly
+you will have the option to change the
+days of the week as well I'm going with
+daily and you can change the time as
+well this is a feature that lets you
+restore your backups fast basically what
+this will do is this will keep the
+storage accounts that contains the files
+hydrated two days are okay for me and
+also we have few other options as well
+configure weekly backups or even longer
+term backups like monthly or yearly
+backups as well and when you click on it
+you have the option to change the
+configurations for each of these items
+and here as you can see Azure backup
+creates a different Resource Group to
+store the rest of points in a restore
+point collection resource here we have a
+text box that we can name that as well
+but I'm going to keep this as it is let
+me click OK all right now here we have a
+summary of my backup schedule and now we
+can select the virtual machines that we
+want to be backed up with this policy
+I'm going to click add and here we have
+the virtual machine let me click OK and
+we have an option here to backup only
+the operating system disk I don't want
+to do this for now let me enable backup
+as you can see the deployment is
+complete now I'm going into the resource
+if I go into backup items now we can see
+the backup management type and the
+number of items in it and here we have
+one in Azure virtual machine type let me
+go into that and here we can see the
+server virtual machine and the last
+backup status is initial backup pending
+as you can see we have no restore points
+even though we have enabled backup we
+have configured backup for these virtual
+machines we haven't backed it up yet we
+just created the schedule for it to
+backup the virtual machine if we go here
+I can click on it and create the backup
+manually and we can specify the date
+that we want this backup to be retained
+by default this is a month from the date
+that you're backing up you can change
+this as well let me add a one day today
+is 18th of this month and I can't add 19
+I should add is it 20 here
+as you can see this happens in a
+synchronous manner triggering backup for
+Server virtual machine this can take
+some time depending on the size of your
+virtual machine let's come back after
+this is done
+after around 10 minutes we can see
+that we have a restore point in my Azure
+Rica resources world now if you look
+here this is a application consistent
+backup and this snapshot contains the
+virtual machine as a whole this uses
+Windows Shadow copy to capture the
+content of the machine memory and any
+pending IO operations as well and if
+this process fails for some reason there
+will be a file system consistent backup
+and here we have crash consistent as
+well this level of consistency usually
+occurs if the virtual machine is shut
+down at the time of the backup now if I
+click here
+we can see the information on the
+operations that is happening on the
+virtual machines that I have attached to
+this Recovery Services Vault now let me
+go back and now if I go to the resource
+groups section
+here we can see a restore point
+collection Resource as well now I'm
+going back to the main Resource Group
+and now I'm going into the virtual
+machine resource and if I scroll down
+into backup section we can see the same
+UI as the recovery services Vault if we
+go here into these three dots we have
+the option to restore the virtual
+machine or recover files I'm first going
+to show you how to use file recovery let
+me click on it now as you can see we
+have three steps here the first one is
+selecting the recovery Point since we
+have only one recovery point we can't
+change it as you can see and then we
+have an option to download an executable
+so what this will do is this will Mount
+the drives of this recovery point on the
+machine that we run this on now let me
+download this all right now I have
+downloaded the exe and I have moved the
+exe to the virtual machine that we have
+created earlier
+and here if we go into C drive we have
+the backup sample here now let me delete
+this I'm going to Powershell and then
+I'm going to run this as administrator
+now let me run this exe I'm going to
+desktop
+and now we have to insert the password
+that was generated here in the portal
+I'm going to copy that and paste it here
+now we have successfully mounted the
+drives now I'm going into this PC and
+here we have our Windows drive and
+temporary storage of this virtual
+machine and then we have two new drives
+now if I go into this Windows drive we
+can see the file that we have created
+earlier now this is how you can use file
+recovery of azure backup now let me
+close this
+and end this service I'm going to close
+this as well
+and here step three is we can unmount
+the disks once you have recovered the
+files that you want you can unmount it
+from here now I'm going back
+to the server VM now let's try out
+restore VM option here you can do it
+from here as well as you can see for
+restoring the virtual machine we have to
+specify a restore point for that we can
+select
+it from here
+all right now we have two options we can
+create a new virtual machine and we can
+replace existing this option will
+replace the disks of your existing
+virtual machines now for this demo I'm
+going with create new virtual machine
+option now let me call it recovered VM
+and then the same Resource Group is fine
+the same virtual network is also okay
+even the subnet is okay now here we have
+to specify a staging location for this
+backup
+I'm specifying this storage account that
+I have already created now let me click
+on restore now as you can see the
+asynchronous process has started let me
+come back when this is done now if I go
+into v-roll jobs here we have the rest
+operation and as you can see it is
+completed now I'm going into the
+resource Group and
+I'm going to refresh it here as you can
+see we have the recovered virtual
+machine now I can go in and as you can
+see a public IP address has already been
+assigned to this virtual machine and I
+can just connect to it let me copy the
+public IP address now I'm connecting to
+the virtual machine I can use the same
+username and password as well now I'm
+going into files Explorer and C drive as
+you can see we have the change that we
+have done initially and today we learned
+what Azure backup is and then we saw how
+you can use file recovery to recover
+files by mounting the register point on
+a computer that you prefer and then we
+saw how to create a full virtual machine
+from that restart points if you have any
+further questions or comments let me
+know down below and don't forget to
+subscribe and like this video If you
+learned something new today and thanks
+for watching

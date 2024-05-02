@@ -1,0 +1,284 @@
+hello everyone in this video we're going
+to understand what Azure site recovery
+is and then we're going to continuously
+replicate a virtual machine using Azure
+site recovery the main problem Azure
+site recovery solve is business
+continuity and disaster recovery and you
+can also think of this as Disaster
+Recovery as a service Azure site
+recovery can basically replicate virtual
+machines
+these virtual machines can be VMS on
+Azure or it could be on-premise VMS or
+even physical servers as you can see we
+have many options here now let's
+understand how site recovery Works let's
+say you have a source environment and
+Target environment and in the source
+environment you have two virtual
+machines as you can see when you
+configure site recovery what it will do
+is it will install site recovery
+Mobility service it is a virtual machine
+extension and this service copies the
+data of your virtual machine to a
+storage account in the same region we
+call it cache storage account and then
+this cache data this cache storage
+account will be used to replicate the
+virtual machine data to another region
+and this is done by Azure site recovery
+and then if something goes wrong in the
+source region we can create new virtual
+machines in the Target region using the
+transferred data from the cache storage
+account to Target environment disks and
+the best part is until you failover to
+the Target region you don't have to pay
+for the compute resources on azure and
+also you have the option to fail back to
+the source environment when that is
+alive or you can reprotect the target
+environment by making that the primary
+environment
+now that you know what site recovery is
+and also you know how it works let's go
+ahead and do a practical demo on Azure
+the first thing that you need for this
+demo is a virtual machine on Azure for
+creating that I have this script here
+let me run it my virtual machine on
+Azure is ready now if I go into Azure
+portal and the resource Group that I've
+just created it's called production RG
+and here we have the virtual machine now
+if I go into the virtual machine and
+scroll down into operations and here we
+have Disaster Recovery if if you see
+this wait for around few minutes this
+will go away when the virtual machine is
+ready we have few options to enable
+replication with site recovery on Azure
+and one of the ways is that using this
+tab and this wizard this makes it much
+easier for you to create
+the target environment and here as you
+can see we can change the target region
+now let me change this to australas and
+also as you can see it is shown in the
+map as well now if I click advanced
+settings and here we have four sections
+we have Target settings and storage
+settings replication settings and
+extension settings now if you focus on
+target settings these are the settings
+for the Target environment as you can
+see we can change the subscription and
+also the resource Group and the virtual
+Network that we are deploying the VM to
+in the Target environment and also we
+can configure the availability settings
+as well so here I'm not going to do any
+change I'm just going to let this result
+create a new Resource Group and a new
+virtual Network even though it creates a
+virtual Network it will not create a
+virtual machine until we fail over to it
+this will reduce our cost now if we look
+here in storage settings we have a cache
+storage account this storage account
+will be created in the same region as
+the source environment and all your
+virtual machine data will be copied to
+this cache storage account before it
+copies the
+data to the disk that gets created in
+the Target environment and also you have
+the option to change its parameters as
+well such as premium mode standard SSD
+for this demo I'm going to keep premium
+SSD and in replication settings as you
+can see we have Recovery Services Vault
+and World Resource Group and things like
+that we have this resource of measure
+called recovery sources Vault this Vault
+will be used to store data that will
+replicate since we need a Recovery
+Services world this wizard will create
+that as well
+and you can change the subscription or
+the resource Group that this will be
+created in and also there will be a new
+automation account created as well for
+managing site recovery extension updates
+for all your replicated items now all
+the settings that are here looks okay
+for me now I'm going to go ahead and
+review and then I'm going to click on
+start replication
+now this will create a lot of resources
+on Azure and this will take around 30
+minutes to complete until that gets
+created to make this demo a little bit
+more interesting what I'm going to do is
+I'm going to install IIs on this app
+server for that I'll just copy the IP
+address I'm going to RDP into it now let
+me install IIs in this server
+all right I have installed IIs and I
+have changed the HTML and I'm going back
+to Azure portal and here networking and
+then I'm going to add a inbound security
+rule here and I'm going to change the
+service to http and port to 80. as you
+can see the network security group is in
+place now if you go into the public IP
+address and
+copy it
+as you can see we are receiving the
+response from the IIs now if I go back
+to the deployment we're seeing this
+message enabling replication for one
+virtual machines now if we go into
+resource groups you can see that this is
+the resource Group that I have initially
+created and there are two new resource
+groups if I go into production ASR
+Resource Group this contains one virtual
+Network when you failover to this target
+region and this is the target region
+here there will be a new virtual machine
+allocated in this Resource Group and
+also in this region now if I go to site
+recovery vault Resource Group you can
+see three
+things here the first one is the cash
+storage account and as you can see that
+is in the same region as my source
+environment is in and then we have an
+automation account and then we have
+Recovery Services Vault if we go here to
+replicated items in that you can see how
+app server VM and the replication status
+is healthy and here we don't see a RPO
+that means that we still cannot fill
+over to the new region because the
+internal synchronization is happening
+now now let's wait for another few
+minutes and come back to do our test
+fillover all right as you can see the
+replication is complete and once all the
+resources are in place you still have to
+wait around 10 minutes depending on your
+environment setup for completing the
+synchronization now for this demo
+everything is complete now if you
+refresh here here we can see the status
+is protected and the RPO is 4 minutes
+and also it says here I haven't done any
+test failures for this yet and if you go
+here to latest recovery points we have a
+list of items now let me go back to the
+virtual machine and yeah let me do a
+change
+all right I have done the change to the
+virtual machine now if I refresh this as
+you can see you're getting it let's wait
+for some time until this gets updated
+all right now we have two options here
+we can failover and we can do a test
+fillover
+the main difference here is that when
+you're doing a test failover you're not
+deleting or you're not stopping your
+Source environment and when you're doing
+a failover you should stop your Source
+environment because if you keep that
+running there can be consistency issues
+now let me click on test fill over here
+we can select the recovery point and
+Azure virtual Network and here we can
+see the failover direction it's from
+Southeast Asia region to Australia East
+and here we have few options I'm going
+to go with the latest one lowest of yo
+here we have an option to select the
+virtual Network in the Target region
+basically my virtual machine will be
+deployed into this virtual Network now
+let me select that and click OK as you
+can see now Azure site recovery is
+creating a new virtual machine in my
+target region let's wait for around 5
+minutes and come back alright as you can
+see we have this option enabled and
+these two disabled that means that we
+have successfully completed the test
+failover now let me go to that Resource
+Group
+in that Target region here as you can
+see we have the virtual machine now if I
+click here you will see that the virtual
+machine is in place but the public IP
+address that is not assigned this you
+can do by yourself using a Powershell
+script if you want to automate this or
+you can go into networking and you can
+click on the network interface and go to
+IP configurations and here if you click
+on this and you can associate with a
+public IP address that you already have
+here if you don't have a public IP
+address you can create it since I have a
+public IP address I'm going to go with
+that let me save it all right now if we
+go into that VM again and overview and
+here we have the public IP address
+assigned now let me copy that place it
+here as you can see we have successfully
+replicated the virtual machine to the
+Target region now let me go back to the
+resource Group and here to site recovery
+Vault and here we have a few options we
+have completed the test failover and we
+can clean up the test failover with this
+you can clean up the virtual machine
+that you just saw I'm going to do that
+now
+as you can see we have cleaned up our
+test environment Let me refresh this
+page now as you can see we have these
+two options here failover and test fill
+up again since we have cleaned up the
+environment now if I go into the target
+Resource Group as you can see we only
+have the virtual Network and the disk
+and my public IP address my VM is not
+here now if I go back as you can see if
+I click on fill over here you have the
+option to shut down the machine before
+beginning the failover and once you have
+successfully failed over to that virtual
+machine you will have these settings
+enabled for example you will be able to
+change recovery points until you commit
+it once you have the correct recovery
+Point deployed you can commit to it so
+that you won't be able to change the
+recovery Point again and after that you
+have the option to re-protect your
+target environment basically now that
+your target environment has become the
+primary environment you have to still
+re-protected so basically these are the
+options that you have once you have
+completed a failover today we learn
+about Azure site recovery and we saw how
+to configure a failover for an extra
+operational machine if you have any
+further questions or comments let me
+know down below and don't forget to like
+this video And subscribe if you learned
+something new today and thanks for
+watching

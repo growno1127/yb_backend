@@ -46,7 +46,7 @@ qdrant_client = QdrantClient(host='localhost', port=6333)
 url = f"https://{QDRANT_HOST}:{QDRANT_PORT}/collections/youtube_videos/points?wait=true"
 searchurl = 'http://localhost:6333/collections/youtube_videos/points/search'
 torch.autograd.set_detect_anomaly(True)
-model = SentenceTransformer('all-MiniLM-L6-v2')
+model = SentenceTransformer('msmarco-MiniLM-L-6-v3')
 vectors = np.random.rand(384, 384)
 
 openai.api_key = OPENAI_API_KEY
@@ -164,23 +164,11 @@ def get_video_ids(youtube, channel_id):
 
 
 def get_video_title(video_id):
-    url = f"https://www.youtube.com/watch?v={video_id}"
+    video_url = f"https://www.youtube.com/watch?v={video_id}"
     try:
-        response = requests.get(url)
+        response = requests.get(video_url)
         response.raise_for_status()
         matches = re.findall(r'<title>(.*?)</title>', response.text)
-        return matches[0].replace(" - YouTube", "") if matches else "Unknown"
-    except requests.RequestException as e:
-        print(f"Error fetching video title: {e}")
-        return "Unknown"
-
-def get_video_channel_title(video_id):
-    url = f"https://www.youtube.com/watch?v={video_id}"
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        print(response)
-        matches = re.findall(r'<channelTitle>(.*?)</channelTitle>', response.text)
         return matches[0].replace(" - YouTube", "") if matches else "Unknown"
     except requests.RequestException as e:
         print(f"Error fetching video title: {e}")
@@ -242,13 +230,12 @@ def save_to_qdrant(video_id, title, transcript, vector, details):
             }
         ]
     }
-
     json_data = json.dumps(data)
-    # print(json_data)
     headers = {
         'Authorization': 'Bearer LFl3MkX_MV07GV_BFz4y_gQQsSMZr46Gt1eEOOMcWVuDQJKMelc52A',
         'Content-Type': 'application/json'
         }
+    print(data)
     response = requests.put(url, headers=headers, data=json_data)
     print("Status Code:", response.status_code)
     print("Response Body:", response.text)
@@ -263,9 +250,6 @@ def save_to_qdrant(video_id, title, transcript, vector, details):
         print("Request failed with status:", response.status_code)
         print("Response was:", response.text)
 
-def generate_vector(text):
-    return model.encode([text])[0].tolist()
-
 def adjust_vector_dimensions(text, target_dim=384, elements_per_line=4):
     vector= model.encode([text])[0]
     if len(vector) > target_dim:
@@ -273,11 +257,6 @@ def adjust_vector_dimensions(text, target_dim=384, elements_per_line=4):
     elif len(vector) < target_dim:
         vector = np.pad(vector, (0, target_dim - len(vector)), 'constant')    
     return vector.tolist()
-
-def format_vector(vector, elements_per_line):
-    elements = [f"{v:.10e}" for v in vector]
-    lines = [", ".join(elements[i:i + elements_per_line]) for i in range(0, len(elements), elements_per_line)]
-    return "[\n" + ",\n".join(lines) + "\n]"
 
 def parse_vector(vector_str):
     try:
@@ -313,14 +292,18 @@ def build_prompt(question: str, references: list) -> tuple[str, str]:
 
 @app.post("/search")
 async def query_from_qdrant(item: SearchItem):
+    print(f">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> {item.search}")
     similar_docs = qdrant_client.search(
         collection_name=COLLECTION_NAME,
         query_vector=model.encode(item.search),
         limit=3,
         append_payload=True,
     )
+    print(f"====Similar docs====: {similar_docs}")
     prompt, references = build_prompt(item.search, similar_docs)
-
+    print(f"====Prompt====: {prompt}")
+    print(f"====references====: {references}")
+    
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -329,18 +312,14 @@ async def query_from_qdrant(item: SearchItem):
         max_tokens=200,
         temperature=0.2,
     )
-
-    response = openai.Completion.create(
-      model="text-davinci-002",  # or whichever model you are using
-      prompt=prompt,
-      max_tokens=50
-    )
-    return response.choices[0].text.strip()
-
-    return {
-        "response": response["choices"][0]["message"]["content"],
-        "references": references,
-    }
+    # response = openai.Completion.create(
+    #   model="text-davinci-002",  # or whichever model you are using
+    #   prompt=prompt,
+    #   max_tokens=50
+    # )
+    # return response.choices[0].text.strip()
+    print(f"====response====: {response}")
+    return response
     # print (item.search)
     # vector = adjust_vector_dimensions(item.search, 100, 4)
     # print(vector)
@@ -416,10 +395,8 @@ async def root(item: Item):
                     transcripts += [transcript_text]
                     print(f"Transcript saved to {file_name}")
                     vector = adjust_vector_dimensions(transcript_text) 
-                    print(get_video_data(api_url))
                     video_details = extract_video_details(get_video_data(api_url))
                     save_to_qdrant(video_id, video_title, transcript_text, vector, video_details)
-                    print(video_datas)
                     return {"message": "success", "URL" : api_links, "Data": video_datas, "transcripts":transcripts}
                 else:
                     print("Unable to download transcript.")

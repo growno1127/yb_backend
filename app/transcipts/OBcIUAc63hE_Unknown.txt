@@ -1,0 +1,66 @@
+hello everyone
+if you're only using a password to
+authenticate a user it leaves an
+insecure Vector for an attack multifact
+authentication is the process where a
+user is prompted during the sign-in
+process for an additional forms of
+identification and today we are going to
+learn how to configure multi-factor
+authentication on Azure ad I'm in my
+Azure ad default directory and I'm going
+to click users and add a new user
+so I'm going to select create a new user
+and I'm going to give a name to call it
+John Doe
+and I'm going to add a password
+like this
+and then I'm going to keep all these
+settings as default and create the user
+as you can see the user is ready now let
+me show you
+that you can log in with that user
+I'm going into that user and
+and we'll copy this and I'm going to
+paste it here
+as you can see I have logged in
+successfully now let me go back to my
+Azure portal and enable multi-factor
+Authentication
+there are many ways of enabling
+multi-factor authentication for users
+and one way is user by user basis and
+for that I'm going in to my default
+directory
+and security section here
+and inside of this security section this
+menu item called MFA I'm going to select
+that and I'm going to click additional
+cloud-based MFS settings and I'm going
+into this users tab here
+as you can see I have my new user and
+multi-factor authentication status is
+disabled there are three statuses here
+disabled enabled and enforced
+if you enable it the user has an option
+to add multi-factor authentication for
+his account and if you enforce it user
+must have configured multi-factor
+authentication for his account
+so I'm going to select this user and
+click this button here to enable it and
+it is asking me whether I should enable
+this
+awesome I've just enabled it now let me
+go back to a new incognito window
+all right
+let me paste the name
+and insert the password
+and as you can see I'm getting a message
+here to enable multi-factor
+authentication for my car hope you
+learned something new today if you have
+any questions or comments leave them
+down below and if you want to learn more
+of this stuff subscribe to my channel as
+well and thanks for watching

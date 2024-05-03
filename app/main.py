@@ -9,6 +9,17 @@ from googleapiclient.errors import HttpError
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
 from sentence_transformers import SentenceTransformer
+from config import (
+    COLLECTION_NAME,
+    OPENAI_API_KEY,
+    QDRANT_API_KEY,
+    QDRANT_HOST,
+    QDRANT_PORT,
+    YOUTUBE_API_KEY,
+    YOUTUBE_API_URL
+)
+from httpx import Timeout
+from datetime import datetime
 import re
 import requests
 import json
@@ -19,6 +30,8 @@ import spacy
 import numpy as np
 import hashlib
 import ast
+import openai
+import torch
 
 app = FastAPI()
 directory_path = os.path.join(os.path.dirname(__file__), 'transcipts')
@@ -26,16 +39,24 @@ nlp = spacy.load('en_core_web_md')
 if not os.path.exists(directory_path):
     os.makedirs(directory_path)
 http = httplib2.Http(timeout=60)
-yt_api_url = 'https://www.googleapis.com/youtube/v3/'
-yt_api_key = 'AIzaSyBv-CCfyDdeOmF8R2cROLXdWl6t3YGdeUE'
+yt_api_url = YOUTUBE_API_URL
+yt_api_key = YOUTUBE_API_KEY
 youtube = build('youtube', 'v3', developerKey=yt_api_key, http=http)
 qdrant_client = QdrantClient(host='localhost', port=6333)
-collection_name = 'youtube_videos'
-url = 'http://localhost:6333/collections/youtube_videos/points?wait=true'
+url = f"https://{QDRANT_HOST}:{QDRANT_PORT}/collections/youtube_videos/points?wait=true"
 searchurl = 'http://localhost:6333/collections/youtube_videos/points/search'
-
+torch.autograd.set_detect_anomaly(True)
 model = SentenceTransformer('all-MiniLM-L6-v2')
-vectors = np.random.rand(100, 100)
+vectors = np.random.rand(384, 384)
+
+openai.api_key = OPENAI_API_KEY
+
+qdrant_client = QdrantClient(
+    host=QDRANT_HOST,
+    port=QDRANT_PORT,
+    api_key=QDRANT_API_KEY,
+    timeout=60
+)
 
 origins = ["http://localhost:3000"]
 app.add_middleware(
@@ -48,7 +69,7 @@ app.add_middleware(
 
 qdrant_client.recreate_collection(
     collection_name='youtube_videos',
-    vectors_config=VectorParams(size=100, distance=Distance.COSINE),
+    vectors_config=VectorParams(size=384, distance=Distance.COSINE),
 )
 
 class Item(BaseModel):
@@ -59,8 +80,31 @@ class SearchItem(BaseModel):
 
 
 def get_video_data(api_url):
-    yt_datas = requests.get(api_url).json()
-    return {"data":yt_datas}
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()  # Will raise an HTTPError for bad responses
+        return response.json()
+    except requests.exceptions.RequestException as e:  # This is the correct syntax
+        print(f"Failed to fetch data: {e}")
+        return None
+
+def extract_video_details(video_data):
+    if not video_data or 'items' not in video_data or not video_data['items']:
+        return None  # Handle the case where no data is available
+
+    item = video_data['items'][0]
+    details = {
+        "video_id": item['id'],
+        "title": item['snippet']['title'],
+        "channel_title": item['snippet'].get('channelTitle', 'Unknown Channel'),
+        "description": item['snippet']['description'],
+        "published_at": item['snippet']['publishedAt'],
+        "like_count": item['statistics'].get('likeCount', '0'),
+        "view_count": item['statistics'].get('viewCount', '0'),
+        "comment_count": item['statistics'].get('commentCount', '0'),
+        "favorite_count": item['statistics'].get('favoriteCount', '0')
+    }
+    return details
 
 def get_video_id(link):
     pattern = r'(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})'
@@ -129,7 +173,19 @@ def get_video_title(video_id):
     except requests.RequestException as e:
         print(f"Error fetching video title: {e}")
         return "Unknown"
-    
+
+def get_video_channel_title(video_id):
+    url = f"https://www.youtube.com/watch?v={video_id}"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        print(response)
+        matches = re.findall(r'<channelTitle>(.*?)</channelTitle>', response.text)
+        return matches[0].replace(" - YouTube", "") if matches else "Unknown"
+    except requests.RequestException as e:
+        print(f"Error fetching video title: {e}")
+        return "Unknown"
+
 def get_transcript(video_id):
     max_retries = 3
     for attempt in range(max_retries):
@@ -151,7 +207,7 @@ def string_to_int_id(video_id):
     hash_object = hashlib.sha256(video_id.encode('utf-8'))
     return int(hash_object.hexdigest(), 16) % (1 << 64)
 
-def save_to_qdrant(video_id, title, transcript, vector):
+def save_to_qdrant(video_id, title, transcript, vector, details):
     try:
         if isinstance(vector, str):
             vector = parse_vector(vector)
@@ -162,10 +218,18 @@ def save_to_qdrant(video_id, title, transcript, vector):
         raise
     
     videos_id = string_to_int_id(video_id)
-    
+    date_obj = datetime.strptime(details["published_at"].replace('Z', ''), "%Y-%m-%dT%H:%M:%S")
+    published_at = date_obj.strftime("%Y-%m-%d %H:%M:%S")
     payload = {
         "title": title,
-        "transcript": transcript
+        "channel_title": details["channel_title"],
+        "transcript": transcript,
+        "description": details["description"],
+        "published_at": published_at,
+        "comment_count": details["comment_count"],
+        "favorite_count": details["favorite_count"],
+        "like_count": details["like_count"],
+        "view_count": details["view_count"]
     }
 
     data={
@@ -180,8 +244,11 @@ def save_to_qdrant(video_id, title, transcript, vector):
     }
 
     json_data = json.dumps(data)
-    print(json_data)
-    headers = {'Content-Type': 'application/json'}
+    # print(json_data)
+    headers = {
+        'Authorization': 'Bearer LFl3MkX_MV07GV_BFz4y_gQQsSMZr46Gt1eEOOMcWVuDQJKMelc52A',
+        'Content-Type': 'application/json'
+        }
     response = requests.put(url, headers=headers, data=json_data)
     print("Status Code:", response.status_code)
     print("Response Body:", response.text)
@@ -199,8 +266,8 @@ def save_to_qdrant(video_id, title, transcript, vector):
 def generate_vector(text):
     return model.encode([text])[0].tolist()
 
-def adjust_vector_dimensions(text, target_dim=100, elements_per_line=4):
-    vector=model.encode([text])[0]
+def adjust_vector_dimensions(text, target_dim=384, elements_per_line=4):
+    vector= model.encode([text])[0]
     if len(vector) > target_dim:
         vector = vector[:target_dim]
     elif len(vector) < target_dim:
@@ -222,27 +289,76 @@ def parse_vector(vector_str):
     except (ValueError, SyntaxError) as e:
         print(f"Error parsing vector string: {e}")
         raise ValueError("Vector must be a string representation of a list of floats")
+    
+def build_prompt(question: str, references: list) -> tuple[str, str]:
+    prompt = f"""
+    You're Marcus Aurelius, emperor of Rome. You're giving advice to a friend who has asked you the following question: '{question}'
+
+    You've selected the most relevant passages from your writings to use as source for your answer. Cite them in your answer.
+
+    References:
+    """.strip()
+
+    references_text = ""
+
+    for i, reference in enumerate(references, start=1):
+        text = reference.payload["transcript"].strip()
+        references_text += f"\n[{i}]: {text}"
+
+    prompt += (
+        references_text
+        + "\nHow to cite a reference: This is a citation [1]. This one too [3]. And this is sentence with many citations [2][3].\nAnswer:"
+    )
+    return prompt, references_text
 
 @app.post("/search")
 async def query_from_qdrant(item: SearchItem):
-    print (item.search)
-    vector = adjust_vector_dimensions(item.search, 100, 4)
-    print(vector)
-    data={
-        "vector": vector,
-        "top": 3
+    similar_docs = qdrant_client.search(
+        collection_name=COLLECTION_NAME,
+        query_vector=model.encode(item.search),
+        limit=3,
+        append_payload=True,
+    )
+    prompt, references = build_prompt(item.search, similar_docs)
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt},
+        ],
+        max_tokens=200,
+        temperature=0.2,
+    )
+
+    response = openai.Completion.create(
+      model="text-davinci-002",  # or whichever model you are using
+      prompt=prompt,
+      max_tokens=50
+    )
+    return response.choices[0].text.strip()
+
+    return {
+        "response": response["choices"][0]["message"]["content"],
+        "references": references,
     }
-    json_data = json.dumps(data)
-    print(json_data)
-    headers = {'Content-Type': 'application/json'}
-    response = requests.post(searchurl, headers=headers, data=json_data)
-    if response.status_code != 200:
-        print("Search failed with status code:", response.status_code)
-        print("Response text:", response.text)  
-        return("Response text:", response.text)
-    else:
-        print("Search successful:", response.json())
-        return("Search successful:", response.json())
+    # print (item.search)
+    # vector = adjust_vector_dimensions(item.search, 100, 4)
+    # print(vector)
+    # data={
+    #     "vector": vector,
+    #     "top": 3
+    # }
+    # json_data = json.dumps(data)
+    # print(json_data)
+    # headers = {'Content-Type': 'application/json'}
+    # response = requests.post(searchurl, headers=headers, data=json_data)
+    # if response.status_code != 200:
+    #     print("Search failed with status code:", response.status_code)
+    #     print("Response text:", response.text)  
+    #     return("Response text:", response.text)
+    # else:
+    #     print("Search successful:", response.json())
+    #     return("Search successful:", response.json())
 
 @app.post("/")
 async def root(item: Item):
@@ -272,7 +388,7 @@ async def root(item: Item):
                         transcripts += [transcript_text]
                         vector = adjust_vector_dimensions(transcript_text) 
                         print(vector)
-                        save_to_qdrant(video_id, title, transcript_text, vector)
+                        # save_to_qdrant(video_id, title, transcript_text, vector)
                         print(f"Transcript saved to {file_name}")
                         return {"message": "success", "video_datas": videos_data, "transcripts":transcripts}
                     else:
@@ -299,10 +415,11 @@ async def root(item: Item):
                         file.write(transcript_text)
                     transcripts += [transcript_text]
                     print(f"Transcript saved to {file_name}")
-                    title = get_video_title(video_id)
                     vector = adjust_vector_dimensions(transcript_text) 
-                    print(vector)
-                    save_to_qdrant(video_id, title, transcript_text, vector)
+                    print(get_video_data(api_url))
+                    video_details = extract_video_details(get_video_data(api_url))
+                    save_to_qdrant(video_id, video_title, transcript_text, vector, video_details)
+                    print(video_datas)
                     return {"message": "success", "URL" : api_links, "Data": video_datas, "transcripts":transcripts}
                 else:
                     print("Unable to download transcript.")
@@ -310,4 +427,3 @@ async def root(item: Item):
             else:
                 print("Invalid YouTube URL.")
                 return {"message": "Invalid YouTube URL."}
-    

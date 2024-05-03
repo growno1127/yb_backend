@@ -1,0 +1,362 @@
+hello everyone in this video we are
+going to learn about virtual machine
+scale sets let's say you want to deploy
+a platform as a service application you
+can do that with Azure app services
+and depending on the load you can scale
+your app service into multiple instances
+just like that when you want to deploy
+an application that has dependencies on
+infrastructure level
+you can create a virtual machine skill
+set and skill set will automatically
+spin up multiple virtual machines and
+the scaling you don't have to worry
+about it will be managed by scale set
+you deployed an application to app
+service here when it comes to Virtual
+Machine scale sets you are not deploying
+an application you are deploying a whole
+image and scale sets will deploy
+multiple virtual machines and all these
+virtual machines will reside in one
+virtual Network and today we're going to
+create
+a virtual machine image from scratch
+and then we're going to create a virtual
+machine skill set with multiple
+instances of virtual machines and after
+that we're going to implement a load
+balancer and then we are going to allow
+traffic from public internet into your
+virtual machines
+so the first step is creating an
+application that will give us the
+instance name of the virtual machine
+that the application is running on in
+that virtual machine skill set and I
+have written this sample application and
+it is almost a one line application as
+you can see it's just returning the
+machine name when you invoke the root of
+this HTTP endpoint so the first thing
+that we should do is we should deploy a
+virtual machine to Azure and then we're
+going to deploy this application and
+then we are going to create an image for
+that I'm going into Azure portal and the
+first thing is we should create a
+resource Group
+so I'm going into resource groups and
+click create here
+and then I'm going to call it VM SS test
+RG something like that
+oh right the resource Group is ready the
+first thing is I'm going to create a
+virtual machine now I'm going to call it
+and then the region I'm going to select
+southeast Asia and image is okay the
+size is okay as well username I'm going
+to call it let's just enable Port 80 as
+well but this is not needed because
+we're just going to create this virtual
+machine and we are going to extract the
+image but I'm going to keep it enabled
+and I'm going to go and all this
+configuration I'm going to keep as
+default because we're just going to use
+this VM to create an image
+all right after like one minute we have
+our virtual machine ready I'm going into
+that resource and I'm going to copy this
+IP address
+all right I have already appeared into
+this virtual machine the first thing
+that I'm going to do is I'm going to
+install IIs server on this virtual
+machine so let me do that now
+all right our web server is ready now
+let me close this for installing the
+application that I've shown you earlier
+this application this is a.net 3.1
+application for installing this you
+should have net hosting bundle installed
+on this virtual machine
+for that I'm going into Internet
+Explorer for downloading it and before
+that I'm going to local server and I'm
+disabling enhanced security
+configuration here and let me go to uh
+Internet Explorer
+um
+right here we have
+a hosting bundle
+all right now I'm going into
+my IIs server here is server manager and
+sites and let me go into the uh the
+directory and I'm going to clear this
+directory
+and then I'm going into my visual studio
+let me
+do a publish and for that I will have to
+create a new published profile I'm going
+with this fold option
+and this fold is okay for me let me
+finish it and click publish
+all right
+now if I go into that folder you will
+see the SE things here and if I go into
+publish we have the uh the things that
+we can deploy into our IIs to run this
+application
+so let me do that now
+I'm going to copy it
+and I'm going to share it basically I'm
+going to paste it
+inside here and then I'm going to
+extract it like this now if I try to
+access this website here
+as you can see we are getting the
+machine name
+of the social machine now we have
+successfully deployed IIs and our sample
+application in this virtual machine the
+next step is creating a image from the
+social machine and for that let me close
+all these windows
+and then I'm going into this PC and C
+drive and windows
+and system 32 folder and here we'll have
+to find
+a tool called sysprep this will prepare
+a VM to be used as a image this setting
+I'm going to keep it as it is I'm going
+to click generalize because
+generalization of this Photoshop machine
+is what we want to achieve
+so let me click on shutdown this is what
+happens after the VM is ready now let me
+click ok
+in around one to two minutes you will
+see this message when you see this you
+can go back to your Azure portal and
+here you can stop that virtual machine
+if it is running now let me click
+refresh here and I'm going to stop it
+now it's time for us to create the image
+let me click on capture
+and then I don't want to share this on
+image gallery and then
+um yeah all these options are looking
+okay for me because this is not our end
+goal so let me click on review and
+create and this will create the image
+for us
+now our image is ready let me click on
+go to resource
+as you can see we have the option to
+create a new virtual machine with this
+image
+and I'm going back into my Resource
+Group as you can see we have many
+resources
+along with our image the only thing that
+we need from now on in this video is the
+image because of that I'm going to
+delete all other resources from this
+Resource Group
+all right now that we have a clean
+Resource Group it is time for us to
+create our
+skill set for that let me search for
+scale set and click create
+here I'm going to name this vmss one and
+region southeast Asia is okay for me and
+all these configuration here I'm going
+to keep it as it is
+and here
+you will see the image if you're not
+seeing it you can go to see all images
+and my images and here you will see the
+image that we have just created
+and you can select it
+and the size of those VMS so basically
+this will create multiple VMS inside of
+this scale set this size is okay for me
+and then you have to give a username and
+password so basically when we
+generalized the virtual machine we have
+removed all these username password and
+this kind of information with Swiss prep
+tool since we are pre-deploying those
+images now we'll have to give them again
+now let me select the license type pass
+well
+we have an option to enable load
+balancer here as well but I will be
+doing that
+separately so here when it comes to
+scaling I don't want this to
+automatically scale we have an option to
+configure that here as well the initial
+instance count I'm going to keep as 2
+and then validation is passed let me
+click create here all right as you can
+see we have deployed our vision scale
+set now let me go to Resource and here
+you will see some information as you can
+see we don't have a public IP address
+and if you go to instances you will see
+the two instances of that virtual
+machine scale set basically the two VMS
+and one of them is still updating State
+let me click refresh here now as you can
+see they're both running
+now it is time for us to create the load
+balancer to route
+the web traffic to these VMS and get our
+response for that let me go to the
+resource Group again
+and I'm going to create a load balancer
+let me click on Create and search for
+load
+balancer
+um yeah we are not getting it let me
+search for it
+um
+okay then let's
+yeah here we have the load balancer
+service so let me click on create
+and I'm going to name it name it my lb1
+and the reason I'm going to keep it as
+it is it is going to be a public one not
+an internal load balancer basically we
+are going to access it from the public
+internet so for that for this one I'm
+going to keep it as a standard one and
+it is not going to be Global load
+balancer now the next thing is since we
+are accessing it from the public
+internet we have to
+add this front-end IP configuration
+um right let me call it f5p and let me
+create a new IP address
+my public IP address
+and then I'm going to click ok
+so we have completed our front-end IP
+configuration the next step is back-end
+pools
+for this let me add virtual Network
+and then
+here you have two options you have you
+can add virtual machines directly and
+you can add virtual machine skill sets
+as well now I'm going to select the
+scale set that we have created the IP
+address as well of that and I see now
+let me add this as you can see we have
+the two virtual machine instances listed
+under back and full one now let me go
+into inbound rules we are writing a rule
+that will route our HTTP traffic that
+hits Auto balancer to our virtual
+machines for that I'm going to click ADD
+alert balancer rule
+let me call it rule one
+and ipv4 front-end IP address is the one
+that we have just created
+and Port is 80 and the back end port is
+also 80. now backend pool is the one
+that we are creating and we have to
+create a health probe for that let me
+call it health
+probe one
+and the protocol is HTTP is okay and
+Port 80 and part is the root interval is
+every 5 Seconds
+unhealthy threshold is two these are all
+okay for me let me click ok
+now I don't want any session persistence
+and all these configurations are okay
+for me let me click add here
+I'll write our inbound rules are ready
+and here you can configure out one rules
+as well but that's
+not needed
+for this
+demo now let me click create as you can
+see our load balancer is ready now let's
+go to this load balancer and see the
+configurations
+and if you go here to front-end IP
+configurations you will see this IP here
+if you try to access it
+as you can see we are not able to access
+our virtual machines
+so what we are missing here is that we
+haven't had the NSG row to our virtual
+machine interface cards
+so now let me go to that Resource Group
+again and then I'm going into so
+basically if you look here we have one
+network security group
+and if you go inside of that security
+group and if you go into interfaces you
+will see that both of my virtual machine
+interface cards are connected to this
+network security group and if you go to
+inbound security rules here you won't
+see any rule here that allows HTTP
+traffic to it and because of that let me
+add a rule here as you can see here I'm
+going to keep all these settings as
+default but you can you should do it if
+it is a production environment you
+should uh maybe add this virtual Network
+only or this IP address only
+so let me go and change this service to
+http because that is what we are trying
+to access let me click add all right as
+you can see we have our Network Security
+Group ready now let me go back to this
+Tab and reload it
+see it is still not working because you
+have to wait for some time for this uh
+this change that we have done to uh to
+affect the virtual Network so let's wait
+for some time and see what happens
+all right I've been waiting here for
+some time but it is still not working
+let's um troubleshoot why this happens
+um so let me go into this virtual
+machine scale set and instances here you
+will see the uh this message saying not
+the latest model
+so we'll have to upgrade this virtual
+machine to the latest model so for that
+I'm going into each of those VMS and I'm
+going to click upgrade here
+all right we have upgraded the first
+virtual machine now let me go back to
+the list and let's try to refresh it
+no issues there and uh
+let's upgrade this one as well all right
+now let's go back and try to see whether
+this works yeah as you can see we are
+getting this message and if you look
+here we are getting the computer name
+because that's what we are returning
+from our SB donate application as you
+can see this is the name
+so let's see what happens if I go ahead
+and maybe restart this virtual machine
+let's wait for some time
+as you can see I'm getting a service
+unavailable one as well and then we are
+getting
+the response from our next virtual
+machine if you have any questions or
+comments let me know down below please
+subscribe if you think you'll learn
+something new today and thanks for
+watching

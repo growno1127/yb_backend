@@ -15,8 +15,7 @@ from config import (
     QDRANT_API_KEY,
     QDRANT_HOST,
     QDRANT_PORT,
-    YOUTUBE_API_KEY,
-    YOUTUBE_API_URL
+    YOUTUBE_API_KEY
 )
 from httpx import Timeout
 from datetime import datetime
@@ -39,17 +38,18 @@ nlp = spacy.load('en_core_web_md')
 if not os.path.exists(directory_path):
     os.makedirs(directory_path)
 http = httplib2.Http(timeout=60)
-yt_api_url = YOUTUBE_API_URL
-yt_api_key = YOUTUBE_API_KEY
-youtube = build('youtube', 'v3', developerKey=yt_api_key, http=http)
 qdrant_client = QdrantClient(host='localhost', port=6333)
-url = f"https://{QDRANT_HOST}:{QDRANT_PORT}/collections/youtube_videos/points?wait=true"
-searchurl = 'http://localhost:6333/collections/youtube_videos/points/search'
 torch.autograd.set_detect_anomaly(True)
-model = SentenceTransformer('msmarco-MiniLM-L-6-v3')
 vectors = np.random.rand(384, 384)
 
+yt_api_url = "https://www.googleapis.com/youtube/v3/"
+searchurl = 'http://localhost:6333/collections/youtube_videos/points/search'
+url = f"https://{QDRANT_HOST}:{QDRANT_PORT}/collections/youtube_videos/points?wait=true"
+
 openai.api_key = OPENAI_API_KEY
+yt_api_key = YOUTUBE_API_KEY
+
+youtube = build('youtube', 'v3', developerKey=yt_api_key, http=http)
 
 qdrant_client = QdrantClient(
     host=QDRANT_HOST,
@@ -57,6 +57,8 @@ qdrant_client = QdrantClient(
     api_key=QDRANT_API_KEY,
     timeout=60
 )
+
+model = SentenceTransformer('msmarco-MiniLM-L-6-v3')
 
 origins = ["http://localhost:3000"]
 app.add_middleware(
@@ -78,19 +80,18 @@ class Item(BaseModel):
 class SearchItem(BaseModel):
     search: str
 
-
 def get_video_data(api_url):
     try:
         response = requests.get(api_url)
-        response.raise_for_status()  # Will raise an HTTPError for bad responses
+        response.raise_for_status() 
         return response.json()
-    except requests.exceptions.RequestException as e:  # This is the correct syntax
+    except requests.exceptions.RequestException as e: 
         print(f"Failed to fetch data: {e}")
         return None
 
 def extract_video_details(video_data):
     if not video_data or 'items' not in video_data or not video_data['items']:
-        return None  # Handle the case where no data is available
+        return None 
 
     item = video_data['items'][0]
     details = {
@@ -124,12 +125,10 @@ def get_channel_id_by_name(youtube, channel_name):
             maxResults=1
         )
         response = request.execute()
-
         if response['items']:
             return response['items'][0]['id']['channelId']
         else:
             return None
-
     except HttpError as e:
         print(f"An HTTP error {e.resp.status} occurred:\n{e.content}")
     except Exception as e:
@@ -154,14 +153,11 @@ def get_video_ids(youtube, channel_id):
             next_page_token = response.get('nextPageToken')
             if not next_page_token:
                 break
-
     except HttpError as e:
         print(f"An HTTP error {e.resp.status} occurred:\n{e.content}")
     except Exception as e:
         print(f"An error occurred: {e}")
-
     return video_ids
-
 
 def get_video_title(video_id):
     video_url = f"https://www.youtube.com/watch?v={video_id}"
@@ -185,7 +181,7 @@ def get_transcript(video_id):
             return transcript_text
         except ConnectionResetError as e:
             print(f"Connection reset by peer, attempt {attempt + 1} of {max_retries}")
-            time.sleep(2 ** attempt)  # Exponential backoff
+            time.sleep(2 ** attempt)
         except Exception as e:
             print(f"Error transcript: {e}")
             return ""
@@ -204,7 +200,6 @@ def save_to_qdrant(video_id, title, transcript, vector, details):
     except ValueError as e:
         print(f"Error in vector data: {e}")
         raise
-    
     videos_id = string_to_int_id(video_id)
     date_obj = datetime.strptime(details["published_at"].replace('Z', ''), "%Y-%m-%dT%H:%M:%S")
     published_at = date_obj.strftime("%Y-%m-%d %H:%M:%S")
@@ -219,7 +214,6 @@ def save_to_qdrant(video_id, title, transcript, vector, details):
         "like_count": details["like_count"],
         "view_count": details["view_count"]
     }
-
     data={
         "ids":[videos_id],
         "points":[
@@ -272,18 +266,12 @@ def parse_vector(vector_str):
 def build_prompt(question: str, references: list) -> tuple[str, str]:
     prompt = f"""
     You're Marcus Aurelius, emperor of Rome. You're giving advice to a friend who has asked you the following question: '{question}'
-
     You've selected the most relevant passages from your writings to use as source for your answer. Cite them in your answer.
-
-    References:
-    """.strip()
-
+    References:""".strip()
     references_text = ""
-
     for i, reference in enumerate(references, start=1):
         text = reference.payload["transcript"].strip()
         references_text += f"\n[{i}]: {text}"
-
     prompt += (
         references_text
         + "\nHow to cite a reference: This is a citation [1]. This one too [3]. And this is sentence with many citations [2][3].\nAnswer:"
@@ -292,18 +280,13 @@ def build_prompt(question: str, references: list) -> tuple[str, str]:
 
 @app.post("/search")
 async def query_from_qdrant(item: SearchItem):
-    print(f">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> {item.search}")
     similar_docs = qdrant_client.search(
         collection_name=COLLECTION_NAME,
         query_vector=model.encode(item.search),
         limit=3,
         append_payload=True,
     )
-    print(f"====Similar docs====: {similar_docs}")
     prompt, references = build_prompt(item.search, similar_docs)
-    print(f"====Prompt====: {prompt}")
-    print(f"====references====: {references}")
-    
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -312,32 +295,7 @@ async def query_from_qdrant(item: SearchItem):
         max_tokens=200,
         temperature=0.2,
     )
-    # response = openai.Completion.create(
-    #   model="text-davinci-002",  # or whichever model you are using
-    #   prompt=prompt,
-    #   max_tokens=50
-    # )
-    # return response.choices[0].text.strip()
-    print(f"====response====: {response}")
     return response
-    # print (item.search)
-    # vector = adjust_vector_dimensions(item.search, 100, 4)
-    # print(vector)
-    # data={
-    #     "vector": vector,
-    #     "top": 3
-    # }
-    # json_data = json.dumps(data)
-    # print(json_data)
-    # headers = {'Content-Type': 'application/json'}
-    # response = requests.post(searchurl, headers=headers, data=json_data)
-    # if response.status_code != 200:
-    #     print("Search failed with status code:", response.status_code)
-    #     print("Response text:", response.text)  
-    #     return("Response text:", response.text)
-    # else:
-    #     print("Search successful:", response.json())
-    #     return("Search successful:", response.json())
 
 @app.post("/")
 async def root(item: Item):
@@ -345,7 +303,6 @@ async def root(item: Item):
     api_links = []
     video_datas = []
     transcripts =[]
-
     if "https://www.youtube.com/@" in item.links:
         for link in links:
             channel_name = get_channel_name(link.strip())
@@ -367,7 +324,6 @@ async def root(item: Item):
                         transcripts += [transcript_text]
                         vector = adjust_vector_dimensions(transcript_text) 
                         print(vector)
-                        # save_to_qdrant(video_id, title, transcript_text, vector)
                         print(f"Transcript saved to {file_name}")
                         return {"message": "success", "video_datas": videos_data, "transcripts":transcripts}
                     else:

@@ -21,4 +21,3 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Youtube
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
-YOUTUBE_API_URL = os.getenv("YOUTUBE_API_URL")

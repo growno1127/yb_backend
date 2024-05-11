@@ -6,8 +6,7 @@ from youtube_channel_transcript_api import YoutubeChannelTranscripts
 from pydantic import BaseModel
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from qdrant_client import QdrantClient, models
-from qdrant_client.models import Distance, VectorParams
+from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
 from config import (
     COLLECTION_NAME,
@@ -75,7 +74,6 @@ class Item(BaseModel):
 
 class SearchItem(BaseModel):
     search: str
-    search_channel: str
 
 def get_video_data(api_url):
     try:
@@ -187,8 +185,8 @@ def get_transcript(video_id):
 def string_to_int_id(video_id):
     hash_object = hashlib.sha256(video_id.encode('utf-8'))
     return int(hash_object.hexdigest(), 16) % (1 << 64)
-def save_to_qdrant(video_id, title, transcript, vector, details, extra, channelName):
 
+def save_to_qdrant(video_id, title, transcript, vector, details, extra, channelName):
     try:
         if isinstance(vector, str):
             vector = parse_vector(vector)
@@ -200,9 +198,13 @@ def save_to_qdrant(video_id, title, transcript, vector, details, extra, channelN
     videos_id = string_to_int_id(video_id)
     date_obj = datetime.strptime(details["published_at"].replace('Z', ''), "%Y-%m-%dT%H:%M:%S")
     published_at = date_obj.strftime("%Y-%m-%d %H:%M:%S")
+    if(len(channelName)==0):
+        channel_name=details["channel_title"]
+    else:
+        channle_name = channelName
     payload = {
         "title": title,
-        "channel_title": channelName,
+        "channel_title": channle_name,
         "transcript": transcript,
         "description": details["description"],
         "published_at": published_at,
@@ -211,7 +213,6 @@ def save_to_qdrant(video_id, title, transcript, vector, details, extra, channelN
         "like_count": details["like_count"],
         "view_count": details["view_count"],
         "extra": extra
-
     }
     data={
         "ids":[videos_id],
@@ -286,12 +287,11 @@ def build_prompt(question: str, references: list) -> tuple[str, str]:
 
 @app.post("/search")
 async def query_from_qdrant(item: SearchItem):
-    print(item)
     similar_docs = qdrant_client.search(
         collection_name=COLLECTION_NAME,
         query_vector=model.encode(item.search),
-        query_filter=models.Filter(
-            must=[models.FieldCondition(key="channel_title", match=models.MatchValue(value=item.search_channel))]
+	    query_filter=model.Filter(
+            must=[model.FieldCondition(key="channel_title", range=model.Range(gte=item.search_channel))]
         ),
         limit=3,
         append_payload=True,
@@ -364,7 +364,6 @@ async def root(item: Item):
                     video_details = extract_video_details(get_video_data(api_url))
                     vector = adjust_vector_dimensions(transcript_text) 
                     save_to_qdrant(video_id, video_title, transcript_text, vector, video_details, item.extra, item.channelName)
-                    
                     return {"message": "success", "URL" : api_links, "Data": video_datas, "transcripts":transcripts}
                 else:
                     print("Unable to download transcript.")

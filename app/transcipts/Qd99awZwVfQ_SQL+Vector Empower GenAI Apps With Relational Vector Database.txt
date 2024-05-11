@@ -1,0 +1,151 @@
+today I'm going to uh hello everyone I'm
+going to talk about like SQL plus
+Vector
+okay and large language models have
+revolutionized the way we solve problems
+but they have severe limitations one
+such limitation is due to the lack of
+training data due to lack of data that
+are not part of the training set leading
+to a phenomenon known as
+hallucination this is also called the
+information
+limitation while fine-tuning can adjust
+the behavior of large language
+models the vector databases are like a
+key component to solve this information
+limitation and that's why we have we we
+are seeing like more people are doing
+building uh using Vector databases to
+build more and more powerful generative
+AI
+applications
+so nowadays there are many many like
+vector databases in the market each
+falling into one of two k degrees one is
+specialized Vector database such as Pine
+con offering performance the other like
+relational database such as postgress
+offering convenience this PLS the user
+into a dilemma that is a battle between
+convenience and performance so imagine
+user relying on postgress for storing
+its structured data but also need to do
+Vector
+search he will find it like inconvenient
+to interface to databases and often
+leading to increased complexity and
+often like potential data consistency
+issues when the data is large so we have
+seen this many times in the
+past and this is where like mycale comes
+into play as a solution like the mycale
+allows users to run Vector search with
+SQL so eliminating the need to interface
+to learn customized apis and to
+interface the different types of
+databases so you can use your famili
+like joints like syntax run nearest
+neighbor search or in a simple like sing
+Single quer SQL queries but what's more
+important I think is this one is it is
+widely assumed that relational database
+cannot compete with specialized V
+databases in terms of vector performance
+for example like postgress with Vector
+plugin has a huge performance
+disadvantage when compared with pinec
+con
+but my scale proves that demonstrate
+that with careful engineering and
+Innovative algorithms it is possible for
+relational database to match or even
+outperform specialized Vector databases
+in terms of performance sometimes by a
+factor of five or more while retaining
+all the benefits of
+SQL let me give you two examples one is
+customer from the financial industry
+like this customer wants to do analysis
+on structured and Vector data like he
+has several constraints like he wants to
+use like like and join syntax to perform
+filter search and want to support like
+various data types like dates and
+strings and also want to do self query
+with longchain so given these complex
+constraints usually like most
+specialized databases do not have the uh
+join support and my scale is the kind of
+like the best choice in another example
+the customer wants to build a research
+system that is to to be able to chat
+with build a chat bot that is able to
+chat with millions of papers so that the
+end user can ask questions about the
+papers such as
+uh what is the promising material for
+room temperature superc conductors
+things like that and because these
+millions of papers translates into
+hundreds of millions of vectors so in
+this case the cost is a key issue and
+comparing is the best Alternatives the
+user have tried like my scale increased
+like uh reduce the cost by factor of
+three and more and reduce the latency
+also so looking to the future I think
+there's another point that I want to
+make here is that I think ENT pric is
+overpay for AI despite its importance if
+you look at the cost structure of
+building a chat bot like 80 to 90% of
+that goes into the large language models
+I think that that part can be reduced by
+a factor of 10,000 I mean that's faster
+than consensus why so because if you in
+our applications if you if you change
+that if you host your own models instead
+of using using commercialized apis
+that's a factor of 10 if you build
+Advanced caching systems that's another
+Factor 10 and there are many other
+techniques that you can use to reduce
+the cost I mean in addition to the
+hardware Improvement so I think there's
+a huge room for improvement I mean in
+terms of the language models on the
+other hand there is room for accuracy
+increase as well I mean we tested with
+like a base model this is a chatbot uh
+problem like you have base model that is
+the Llama 2 with 13 billion parameters
+and we uh we in we use a vector plugin
+that's a Wikipedia vectorized vikipedi
+as a vector plugin and the accuracy
+increases but know that the is already
+in the training set despite in though
+that this is the case that the accurate
+still increases so if we uh
+theoretically you can prove that if you
+use larger Vector data stores then the
+accur will increase even further but
+note that the cost of vector database is
+much much lower than the large language
+models I mean using a large model so it
+proves that using a medium to or small
+language model plus a large Vector
+database can actually sometimes outform
+the large language models I me of a
+bigger size so this obviously points out
+to a future way of of a future Direction
+so this so in conclusion I think there's
+a u my scale allows users to run Vector
+search with the SQL and it proves that
+relational database can match and
+outperform the performance of
+specialized databases while retaining
+all the benefits of SQL and also there's
+huge room for improvement I think we
+also have a boost there so I'm happy to
+chat more thank you

@@ -6,7 +6,7 @@ from youtube_channel_transcript_api import YoutubeChannelTranscripts
 from pydantic import BaseModel
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from qdrant_client import QdrantClient
+from qdrant_client import QdrantClient, models
 from qdrant_client.models import Distance, VectorParams
 from sentence_transformers import SentenceTransformer
 from config import (
@@ -38,12 +38,11 @@ nlp = spacy.load('en_core_web_md')
 if not os.path.exists(directory_path):
     os.makedirs(directory_path)
 http = httplib2.Http(timeout=60)
-qdrant_client = QdrantClient(host='localhost', port=6333)
 torch.autograd.set_detect_anomaly(True)
 vectors = np.random.rand(384, 384)
 
 yt_api_url = "https://www.googleapis.com/youtube/v3/"
-searchurl = 'http://localhost:6333/collections/youtube_videos/points/search'
+searchurl = f'http://localhost:{QDRANT_PORT}/collections/youtube_videos/points/search'
 url = f"https://{QDRANT_HOST}:{QDRANT_PORT}/collections/youtube_videos/points?wait=true"
 
 openai.api_key = OPENAI_API_KEY
@@ -60,7 +59,7 @@ qdrant_client = QdrantClient(
 
 model = SentenceTransformer('msmarco-MiniLM-L-6-v3')
 
-origins = ["http://localhost:3000"]
+origins = "*" 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -69,16 +68,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-qdrant_client.recreate_collection(
-    collection_name='youtube_videos',
-    vectors_config=VectorParams(size=384, distance=Distance.COSINE),
-)
-
 class Item(BaseModel):
     links: str
+    extra: str
+    channelName: str
 
 class SearchItem(BaseModel):
     search: str
+    search_channel: str
 
 def get_video_data(api_url):
     try:
@@ -190,8 +187,8 @@ def get_transcript(video_id):
 def string_to_int_id(video_id):
     hash_object = hashlib.sha256(video_id.encode('utf-8'))
     return int(hash_object.hexdigest(), 16) % (1 << 64)
+def save_to_qdrant(video_id, title, transcript, vector, details, extra, channelName):
 
-def save_to_qdrant(video_id, title, transcript, vector, details):
     try:
         if isinstance(vector, str):
             vector = parse_vector(vector)
@@ -205,14 +202,16 @@ def save_to_qdrant(video_id, title, transcript, vector, details):
     published_at = date_obj.strftime("%Y-%m-%d %H:%M:%S")
     payload = {
         "title": title,
-        "channel_title": details["channel_title"],
+        "channel_title": channelName,
         "transcript": transcript,
         "description": details["description"],
         "published_at": published_at,
         "comment_count": details["comment_count"],
         "favorite_count": details["favorite_count"],
         "like_count": details["like_count"],
-        "view_count": details["view_count"]
+        "view_count": details["view_count"],
+        "extra": extra
+
     }
     data={
         "ids":[videos_id],
@@ -226,10 +225,9 @@ def save_to_qdrant(video_id, title, transcript, vector, details):
     }
     json_data = json.dumps(data)
     headers = {
-        'Authorization': 'Bearer LFl3MkX_MV07GV_BFz4y_gQQsSMZr46Gt1eEOOMcWVuDQJKMelc52A',
+        'Authorization': f'Bearer {QDRANT_API_KEY}',
         'Content-Type': 'application/json'
         }
-    print(data)
     response = requests.put(url, headers=headers, data=json_data)
     print("Status Code:", response.status_code)
     print("Response Body:", response.text)
@@ -245,6 +243,7 @@ def save_to_qdrant(video_id, title, transcript, vector, details):
         print("Response was:", response.text)
 
 def adjust_vector_dimensions(text, target_dim=384, elements_per_line=4):
+    print(text)
     vector= model.encode([text])[0]
     if len(vector) > target_dim:
         vector = vector[:target_dim]
@@ -265,24 +264,35 @@ def parse_vector(vector_str):
     
 def build_prompt(question: str, references: list) -> tuple[str, str]:
     prompt = f"""
-    You're Marcus Aurelius, emperor of Rome. You're giving advice to a friend who has asked you the following question: '{question}'
-    You've selected the most relevant passages from your writings to use as source for your answer. Cite them in your answer.
-    References:""".strip()
+    You're a friendly helper. You're giving advice to a friend who has asked you the following question: '{question}' You've selected the most relevant passages from your writings to use as a source for your answer. If the answer is not in the writings, apologize for the inconvenience.""".strip()
     references_text = ""
     for i, reference in enumerate(references, start=1):
-        text = reference.payload["transcript"].strip()
+        transcript = reference.payload["transcript"].strip()
+        description = reference.payload["description"].strip()
+        title = reference.payload["title"].strip()
+        channeltitle = reference.payload["channel_title"].strip()
+        published_at = reference.payload["published_at"].strip()
+        comment_count = reference.payload["comment_count"].strip()
+        favorite_count = reference.payload["favorite_count"].strip()
+        like_count = reference.payload["like_count"].strip()
+        view_count = reference.payload["view_count"].strip()
+        text=f"title={title} description={description} channeltitle={channeltitle} transcript={transcript} published_at={published_at} comment_count={comment_count} favorite_count={favorite_count} like_count={like_count} view_count={view_count}"
+        print(text)
         references_text += f"\n[{i}]: {text}"
     prompt += (
         references_text
-        + "\nHow to cite a reference: This is a citation [1]. This one too [3]. And this is sentence with many citations [2][3].\nAnswer:"
     )
     return prompt, references_text
 
 @app.post("/search")
 async def query_from_qdrant(item: SearchItem):
+    print(item)
     similar_docs = qdrant_client.search(
         collection_name=COLLECTION_NAME,
         query_vector=model.encode(item.search),
+        query_filter=models.Filter(
+            must=[models.FieldCondition(key="channel_title", match=models.MatchValue(value=item.search_channel))]
+        ),
         limit=3,
         append_payload=True,
     )
@@ -310,6 +320,7 @@ async def root(item: Item):
             video_ids = get_video_ids(youtube, channel_id)
             video_datas = [get_video_data(f"{yt_api_url}videos?id={video_id}&key={yt_api_key}&part=snippet,contentDetails,statistics,status") for video_id in video_ids]
             channel_getter = YoutubeChannelTranscripts(channel_name, yt_api_key)
+            print(channel_getter)
             videos_data = channel_getter.get_transcripts()
             for video_id in video_ids:
                 if video_id:
@@ -350,9 +361,10 @@ async def root(item: Item):
                         file.write(transcript_text)
                     transcripts += [transcript_text]
                     print(f"Transcript saved to {file_name}")
-                    vector = adjust_vector_dimensions(transcript_text) 
                     video_details = extract_video_details(get_video_data(api_url))
-                    save_to_qdrant(video_id, video_title, transcript_text, vector, video_details)
+                    vector = adjust_vector_dimensions(transcript_text) 
+                    save_to_qdrant(video_id, video_title, transcript_text, vector, video_details, item.extra, item.channelName)
+                    
                     return {"message": "success", "URL" : api_links, "Data": video_datas, "transcripts":transcripts}
                 else:
                     print("Unable to download transcript.")

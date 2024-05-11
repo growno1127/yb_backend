@@ -1,0 +1,166 @@
+hello everyone in this video we are
+going to learn what Azure virtual
+Network appearing is and then we're
+going to see how you can configure that
+on Azure so let's get started now I'm in
+Microsoft Azure official documentation
+page for virtual Network appearing as it
+says here with virtual Network peering
+you can seamlessly connect two or more
+virtual networks on Azure and the
+traffic between these virtual machines
+in paired virtual networks is traveled
+through Microsoft backbone
+infrastructure and there are mainly two
+types of pairing virtual Network peering
+and Global virtual Network pairing in
+Virtual Network peering you're
+connecting basically two virtual
+networks that are within the same Azure
+region but when it comes to Global
+Network appearing we are connecting two
+virtual networks across two regions
+if you come here to this page there are
+a few things that you can learn such as
+the limitations of global virtual
+Network peering and things like that so
+let me go back to what we are going to
+do today
+so here as you can see we are going to
+deploy two virtual networks in two Azure
+regions one in Southeast Asia and one in
+West us and then I'm going to install
+Apache server on West us region virtual
+machine
+and then I'm going to enable
+Global peering between these two virtual
+networks and then I'm going to show you
+how you can access the web server that I
+have deployed in West us region now to
+deploy the architecture that I've shown
+you I have written a script here as you
+can see I have declared some variables
+the resource Group name and the location
+and the v-net infra information and
+things like that and the first thing
+that I'm going to do is create a
+resource Group and the next thing is I'm
+creating a virtual Network in Southeast
+Asia region and I'm creating two VMS in
+Southeast Asia region and after that I
+am going to West us region and here as
+well I'm creating another question
+Network and a subnet and a VM and after
+that I'm going to install Apache on West
+us virtual machine now let me copy the
+commands the scripts that I have written
+here
+and then I'm going to open up my
+Powershell window like this
+and then I'm going to paste it here
+as you can see the resources are getting
+created now
+all right all the resources just got
+created and I will link this script down
+below if you want to try this out and
+now let me go to my Azure portal and as
+you can see I have just created this
+Resource Group with my script and if I
+go in
+you'll be able to see that all the
+resources are in here some of those
+resources are in Southeast Asia and some
+of those are in West us let me Group by
+type
+yeah as you can see here we have three
+VMS and two virtual networks and few
+public IPS and and all the other
+resources as well let me show you the
+some review and as you can see we have
+some resources in West us and some
+resources in Southeast Asia as well and
+now if I go to Resource visualizer and
+as you can see we have two virtual
+Network and they're not connected at all
+they are in separate regions now let me
+go to these virtual machines and connect
+to
+two of them uh let me Group by type and
+go into
+this VM and that is in Southeast Asia
+and copy this IP address and I'm going
+to open my command prompt
+and I'm going to SSH into it
+all right I'm in and then I'm going to
+SSH into the other region as well let me
+go to Azure portal again and
+to this virtual machine that that is in
+West us and I'm going to copy that going
+back and then all right now I have
+logged into these two regions and the
+next thing that I'm going to do is
+install the Apache web server so for
+that let me log in as root and then I'm
+going to paste these commands update
+um install
+all right now our website is ready let
+me add this text
+to my HTML page that is in my web server
+and then let me get the IP address of
+this VM
+as you can see and that is
+this thing here
+and I'm going back to Southeast Asia
+virtual machine and let me curl it from
+here
+as you can see I'm not getting anything
+because these virtual networks are not
+peered yet now let me go to Azure portal
+and configure virtual Network pairing
+now as you can see I'm in my Resource
+Group and I'm going to click on this
+virtual Network that is in Southeast
+Asia and then I'm going into pairings
+here and then I'm going to click add
+I am going to name this pairing
+appearing
+SCA and then I'm going to keep all these
+things as default now let me give a name
+to this one as well I'm going to call it
+pairing West us and this will create two
+pairings one from Southeast Asia to West
+us and one from West U.S to Southeast
+Asia now let me select the virtual
+Network
+the subscription is this and the virtual
+network is with Device because I'm
+currently in Southeast Asia and then I'm
+going to click add and this is in
+updating State now this will be
+connected within few seconds if you
+click refresh few times here as you can
+see now it's connected let me go to my
+command prompt again and let me try this
+now
+as you can see I'm getting this message
+from West us region let me do a ping to
+that as well
+all right the thing is working now if I
+get the IP address of this machine
+and that is
+1004 and I'm going to bring that from
+best us as well
+all right the two-way communication is
+working now now if I go back to my Azure
+portal and resource visualizer you'll be
+able to see the virtual Network
+appearing is active as you can see this
+is the uh with the virtual Network in
+Southeast Asia and this is the virtual
+Network invest us and this pairing is
+represented like this hope you learned
+something new today if you have any
+questions or comments you can leave down
+below and if you want to be updated with
+what I'm doing you can subscribe to my
+channel as well and thanks for watching

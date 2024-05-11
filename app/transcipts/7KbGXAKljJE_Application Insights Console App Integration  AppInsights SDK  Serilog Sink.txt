@@ -1,0 +1,150 @@
+today I'm going to show you how to
+integrate your console application with
+your application insights resource and I
+have here my application insights
+resource created let me go to my visual
+studio and show you how you can
+integrate your console application with
+your application insights resource so
+this is my visual studio here
+I have created in two projects in the
+first one I'm going to show you how to
+directly integrate with
+um application insights using direct
+sdks and here I'm going to show you how
+to use sir log and integrate to your
+application insights with fertilog which
+is easier but I'm going to show you this
+one so that you know how to do it first
+of all we need to install some packages
+to um to our project
+and I'll be attaching these codes code
+snippet in the description below so you
+can use it
+and then add this
+using statements here and then we are
+going to add this service collection
+because we don't have a dependency
+injection setup in our control
+application
+that's why I am doing it and there's one
+thing that you should understand and
+that is the server Telemetry Channel
+there are two um
+Elementary channels that you can use one
+is in memory and one is server
+television this is the more advanced one
+than in memory so basically what these
+do is that this works as a buffer for
+your locks you can configure the uh the
+time that it it should take for sync uh
+sync your logs to application device
+thank you
+thank you
+and and here I'm doing uh here I have
+a completed setting up all the objects
+that I need for do the logging and then
+um you know file Loop I'm I'm doing
+logging here before going forward I need
+to add my application insights key here
+so let me copy it
+and paste it here
+now let's run this application all the
+code here will be attached in the
+description below so that you can use it
+so as you can see it's writing to
+application insights
+in this for Loop now let's go to my
+application in files resource on azure
+see whether it works
+if I go here to blocks
+I'm not seeing anything because it
+usually takes few minutes for
+application insights to show your logs
+so let's wait for some time
+all right now as you can see we have um
+the logs that we wrote in application
+insights so uh so let's add this
+order by
+so that uh we are seeing the latest ones
+okay nice so let's uh go back to my
+visual studio and stop this application
+and now let's try to try this the same
+thing with serilog which which is the uh
+the recommended approach because you can
+there are many many features that you
+can use
+um when you're using serolog for example
+the concept of syncs
+um with that you can connect to
+um you can use many other log handlers
+it could be um it doesn't have to be
+application inside it's going to be a
+console console or it could be a text
+file or it could be a table storage
+as you can see here there are many uh
+syncs available with Siri log so so
+let's go back to my application and
+install the packages we need to
+integrate with cellulog so these are the
+packages that I'm going to install
+as you can see I'm going to install this
+Microsoft package and then all the
+Sherlock ones
+um basically this is you need this
+package and one of these packages so for
+this example I'm using these all these
+three things the console one the filed
+one and and the one that we are going to
+mainly focus on today that is
+application insights so um so let's
+install these packages
+all right now let's add the uh the using
+statements
+that we need and then at the code is the
+code snippet so here as you can see
+um
+I can just add and remove these things
+easily you can just uh it's a fluent API
+if you want if you don't want a file or
+console logs you can just remove it but
+I'm going to add this for you this
+example you need this insights key which
+we could get from application insights
+so let's go back to my application
+insights resource and copy
+the instrumentation key and paste it
+here
+all right
+now let's let's run this and see how it
+how it works
+yeah as you can see
+um unlike before we are seeing the logs
+in the console because we have added
+this console here and we have added this
+file
+um sync as well let's see whether that
+works
+so I'm going to go to my uh my directory
+of of the project
+as you can see I'm seeing the the logs
+in the file as well now let's go to my
+application insights resource and see
+um the logs
+you'll have to wait for some time
+because it takes few minutes for this to
+get updated let's wait
+all right now we are seeing the logs
+from our
+um sorry lock Library
+as you can see we have used direct SDK
+and serloc for integrating with
+application insights Ser log is the the
+recommended approach for doing this
+because you have many options and you
+don't have to get lost with the channels
+and things like that if you have any
+questions you can leave them below and
+if you want to be updated with what I'm
+doing you can subscribe to my channel as
+well and thanks for watching

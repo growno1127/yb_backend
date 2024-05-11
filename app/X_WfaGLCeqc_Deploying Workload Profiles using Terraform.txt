@@ -1,0 +1,143 @@
+hello everyone in this quick video we're
+going to learn how to manage workload
+profiles in asual content WS using terao
+as you can see on the screen I have a
+very simple Tero file in my vs code I
+have opened I have taken this directly
+from the terraform documentation I'm
+first creating a resource Group a log
+analytics workspace a CS environment and
+the container app so if I go into the vs
+code I have the same thing here and I
+have already initi terraform as well now
+I'm going to apply this to create the
+resources as you can see I don't have
+any workload profile configured here let
+me apply this terraform configuration
+this can take few minutes to be deployed
+and now let me go into Azure portal and
+if I go into the Cs environment as you
+can see here the environment type is
+consumption only and I don't have a tab
+to manage workload profiles as well the
+reason that I wanted to show you this uh
+before doing the workload profile based
+deployment is that if you change a
+consumption plan to workload profile
+mode the whole environment gets
+recreated and now let me add a workload
+profile into this conts environment so
+now all I have to do is adding this uh
+code block here work profile the type is
+the4 the name and the maximum instance
+count and the minimum um instance count
+as well so I can add more workload
+profiles like this let's say if I wanted
+two workload profiles this SI this is
+how I can add them and I can change it
+to EO for example let's say this is a uh
+memory optimized one I'm going to name
+it to uh memory optimized and all right
+I'm going to save it and now let me run
+the terraform plan to see what happens
+to the environment all right um as you
+can see we are going to add to new
+resources and we're going to destroy the
+uh the existing resources and if I
+scroll up the cup environment this will
+be replaced and the conp it's also will
+be replaced and I don't think this will
+be an issue if you have all the CSD
+pipelines and things like that in place
+and now I'm going to apply this change
+this will destroy the environment that
+you have there first and it'll create
+the new environment and the type of the
+new environment will be workload
+profiles and this can take around um 7 7
+8 minutes to be deployed all right now
+let me go back to the Azure portal and
+uh let me refresh this we're going to go
+back to the uh the resource Group and
+then I'm going to go into the
+environment as you can see now the
+environment typ is workload profiles if
+we look at the tabs that are available
+for us we have the workload profiles and
+we have the two new workload profiles
+that we have added using ter form even
+though I have added the two workload
+profiles the existing application that
+we have created here let me go back to
+the code and this is the container WS
+environment and this is the container
+app that is still in the consumption
+there but if I go into that let me just
+go into that and look at the environment
+type it says workload profile so this
+can be a little bit misleading for some
+but if we scroll down as you can see we
+have the the type of actual worklow
+profile of this g r now what is shown
+here is the the type of the the
+environment now the next question is how
+to deploy the existing container app in
+the uh workload profile now what happens
+if we keep this configuration here is
+that you have to pay you'll have to pay
+for the workload profile a constant
+amount in addition to that you'll have
+to pay for the consumption tier content
+wrap as well and it is really easy to
+change this content wrap from the
+consumption there into the workload
+profile there so all we have to do is
+I'm going to go into the terraform code
+and I'm going to apply the workload
+profile name here the name the so we
+have created two workload profiles I'm
+going to copy this name I'm going to use
+the same name here this is all we have
+to do to assign the consumption TI
+container app into a workload profile
+and by default this is the default
+configuration of the coner WAP if you
+want to move a container WAP that is
+deployed in a workload profile by
+changing this you can move it to the uh
+the consumption t let me change this
+back to the the workl profile name and
+then I'm going to run a terraform plan
+command and as you can see the app one
+will not be recreated it'll be updated
+in place so the change is consumption to
+the workload profile now let me run it
+all right as you can see we have updated
+the app now let me go back to the aure
+portal and this is the um the container
+app as you can see it's in the
+consumption Let me refresh it as you can
+see the workload profile is the uh the
+new workload profile that we have
+created by changing this we're not
+changing the the URL or the
+functionality of the app in any way so
+it's really good flexibility to have I
+mean let's say if you have deployed an
+application in the workload profiles
+tier and if you think it's no longer
+required for you to have the the content
+wrap in the workload profile here you
+can just easily move that to the
+consumption here to save some money and
+the next thing is you can easily switch
+between consumption and the workl
+profile mode here in the portal itself
+as well now this is what I wanted to
+cover in this video today if you have
+any comments or video suggestions please
+let me know in the comments down below
+and don't forget to like the video and
+subscribe if you learn something new
+today I will see you with another video
+like this soon and thanks for watching

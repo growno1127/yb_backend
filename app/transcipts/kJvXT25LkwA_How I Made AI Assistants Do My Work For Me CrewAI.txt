@@ -1,0 +1,465 @@
+have you ever found yourself on the
+verge of making a controversial purchase
+just as you're about to click on that
+buy button an unexpected thought
+suddenly crosses your mind wait a minute
+they look a little bit like soy cheese
+don't they no no no no no they're
+absolutely beautiful and Kanye West
+loves them he wears them all the time
+but if I like things that Kanye likes is
+that really a good thing okay I need to
+relax everything is fine and buying
+these makes me a Visionary a trend
+Setter do these holes exist for
+ventilation purposes oh okay time for a
+break I need to urgently distress from
+all this thinking with some Pringles
+wait is you think this like really
+unhealthy so that inner dialogue you
+just witness is what Daniel conman
+author of Book Thinking Fast and Slow
+calls system to thinking it's a slow
+conscious type of thinking that requires
+deliberate effort and time the opposite
+of that is system one or fast thinking
+system one is subconscious and automatic
+for example when you effortlessly
+recognize a familiar face in a a crowd
+but why am I talking about this in a
+video about AI assistance well in order
+to understand that I have to mention an
+amazing YouTube video posted by Andre
+karpati a great engineer at open AI in
+that video Andre clarifies that right
+now all large language models are only
+capable of system one thinking they're
+like Auto predict on steroids none of
+the current llms can take let's say 40
+minutes to process a request think about
+a problem from various angles
+and then offer a very rational solution
+to a complex problem and this rational
+or system to thinking is what we
+ultimately want from AI but some smart
+people found a way to work around this
+limitation actually they came up with
+two different methods the first and
+simpler way to simulate this type of
+rational thinking is with tree of
+thought prompting you might have heard
+of it so this involves forcing the llm
+to consider an issue from multiple
+perspectives or from perspectives of
+various experts these experts then make
+a final decision together by respecting
+everyone's contribution the second
+method utilizes platforms like crew aai
+and agent systems crei allows anyone
+literally anyone even non-programmers to
+build their own custom agents or experts
+that can collaborate with each other
+thereby solving complex tasks you can
+tap into any model that has an API or
+run local models through AMA another
+very cool platform
+and in this video I want to show you how
+to assemble your own team of smart AI
+agents to solve tricky complex problems
+and I'll also demonstrate how to make
+them even more intelligent by giving
+them access to real world data like
+emails or redit conversations and
+finally I'll explain how to avoid paying
+fees to companies and exposing your
+private info by running models locally
+instead and speaking of local models
+I've actually made some really
+surprising discoveries and I'm going to
+talk about it a little bit later so
+let's build an agent team I'll guide you
+through getting started in a way that's
+simple to follow along even if you're
+not a programmer in my first example
+I'll set up three agents to analyze and
+refine my startup concept okay so let's
+begin first open vs code and open a new
+terminal I've already created and
+activated my virtual environment and I
+recommend you do the same and once
+that's done you can actually install
+crew AI by typing the following in the
+terminal Next Step will be to import
+necessary modules and packages and
+you're going to need an open API key so
+in this case I'm going to need the
+standard module and I need to import
+agent task processing crew from crew AI
+you can set the open AI as the
+environmental variable so by default
+crew AI is going to use GPT 4 and if you
+want to use use GPT 3.5 you have to
+actually specify that but I don't think
+that you're going to get amazing results
+with 3.5 I actually recommend use GPT 4
+now let's define three agents that are
+going to help me with my startup there's
+no actual coding here this is just good
+old prompting so let's instantiate three
+agents like this each agent must have a
+specific role and I want one of my
+agents to be a market researcher expert
+so I'm going to assign it or this
+specific role also each agent should
+have a clearly defined goal in my case I
+want this research expert agent to help
+me understand if there is a substantial
+need for my products and provide
+guidance on how to reach the widest
+possible target audience and finally I
+need a backstory for my agent something
+that's going to additionally explain to
+the agent what this role what this role
+is about lastly you can set verbos to
+True which will enable agents to create
+detailed outputs and by setting this
+parameter to true I'm allowing my agents
+to collaborate with each other so I will
+save this agent as a marketer and I'm
+going to do the same for two other
+agents so overall I I'll have a marketer
+a technologist and a business
+development expert on my team of AI
+agents so once this part is done it's
+time to Define tasks tasks are always
+specific and results um in this case it
+can be let's say a detailed business
+plan or market analysis for example
+agents should be defined as Blueprints
+and they should be reused for different
+goals but tasks should always be defined
+as specific results that you want to get
+in the end and tasks should have a
+description always something that
+describes what the task is about
+and they should also always have an
+agent that's going to be assigned to
+every specific test so in my case I want
+to have three specific tasks my business
+idea is to create elegant looking plugs
+for Crocs so this iconic Footwear looks
+less like Swiss chees I will assign the
+first task to a marketer agent and this
+agent will analyze the potential demand
+for these super cool plugs in advis on
+how to reach the largest possible
+customer base another task is going to
+be given to a technologist and this
+agent will provide the analysis and
+suggestions for how to make these plugs
+and the final task will be given to a
+business cons consultant who's going to
+take into consideration everyone's
+reports and write a business plan now
+that I have defined all the agents and
+all the tasks as a final step I'm going
+to instantiate the crew or the team of
+Agents I'm going to include all the
+agents and tasks and I'm going to define
+a
+process process defines how these agents
+work together and right now it's only
+possible to have a sequential process
+which means output of the first agent
+will be the input for the second agent
+and then that's going to be the input
+for the third agent and now I'm going to
+make my crew work with this final line
+of code I also want to to see all the
+results printed in the console so that's
+the most basic possible example and it's
+the best way to understand actually how
+crew AI works and I expect these results
+to be far from impressive I actually
+believe that the results are going to be
+just a little bit better than just
+asking Char with to write a business
+plan but let's
+see okay so now I have the results I
+have business plan with 10 build points
+I have five business goals and a time
+schedule and so I should have a 3D
+printing technology and injection molds
+laser Cuts apply machine learning
+algorithms to analyze custom preferences
+and predict future buying Behavior so I
+guess this agent really took very
+seriously my business idea and I even
+have sustainable or recycled materials
+that's great so there you go so how to
+make a team of Agents even smarter
+making agents smarter is very easy and
+straightforward with tools by adding
+these tools you're giving agents access
+to real world realtime data and there
+are two ways to go about this first and
+easier option is to add built-in tools
+that are part of L train and I will
+include a link to a complete list of
+Lang chain tools but some of my personal
+favorites are 11 Labs text to speech
+which generates the most realistic AI
+voices then there are tools that allow
+access to YouTube and all kinds of
+Google data and Wikipedia so now I'll
+change my crew and in this next example
+I'll have three agents researcher
+technical writer and writing critic
+everyone will have their own task but in
+the end I want to have a detailed report
+in form of a blog or a newsletter about
+the latest Ai and machine learning
+Innovation the blog must absolutely have
+10 paragraphs it has to have all the
+names of all the projects tools written
+in bold and every paragraph has to have
+a link to the project I'll use Lang
+chain Google seral tool which will fetch
+Google search results but first I'll
+send it for free API key through serer
+Dev I'm going to include the link to all
+the code and all the prompts in the
+description box as usual so let's begin
+by importing necessary modules and let's
+initialize Sur API tool with API key so
+I'll instantiate the tool I'll name the
+tool a Google scraper tool and I'll give
+it a functionality which is to execute
+search queries and along with
+description to indicate the use case as
+a last step before running the script I
+should assign this tool to my agent
+that's going to run first and once I run
+the script I can see all the scrape data
+in blue letters green letters show agent
+processing this information and white
+letters are going to be the final output
+of each agent so this is what my
+newsletter looks like right now and I
+have 10 paragraphs as requested each
+paragraph has a link and around two to
+three sentences so the form it is fine
+it's exactly what I was looking for but
+there is a big problem so the quality of
+information in the newsletter is not
+really the best none of these projects
+are really in the news at this moment
+and my newsletter is only as good as the
+information that goes into it so let's
+fix that how do I improve the quality of
+the newsletter
+well it's actually quite simple I just
+need to find a better source of
+information and that brings me to custom
+made tools but before I dive into that
+it's worth mentioning that there is one
+more cool and very useful pre-built tool
+that people might Overlook and that is
+human inal lope this tool will ask you
+for input if it runs into conflicting
+information okay so back to fixing the
+newsletter my favorite way to get
+information is local llama subreddit the
+community is amazing and they Shir an
+incredible amount of cool exciting
+projects and I just don't have enough
+time to sit and read through all of it
+so instead I'm going to write a custom
+tool that scrapes latest 10 hot posts as
+well as five comments per each post
+there is a preil tool through length
+chain a Reddit scraper but I don't
+really like using it my own custom tool
+gives me a lot more control and
+flexibility here's a quick look at the
+code so import Pro and Tool from link
+chain and I'm going to create a new
+class that's called browser tools which
+is how I'm going to create this Custom
+Tool then I'm going to need a decorator
+and a single line dog string that
+describes what the tool is for the
+scrape Reddit method starts by
+initializing the pro rdit object with
+client ID client secret and user agent
+it then selects the subreddit local
+llama to scrape data from then the
+method iterates through 12 hotest posts
+on the Reddit extracting the post title
+URL and up to seven top level comments
+it handles API exceptions by pausing the
+scraping process for 60 seconds before
+continuing and the scrape data is
+compiled into a list of dictionaries
+each containing details of a post and
+its comments which is returned in the
+end and the rest of the code is the same
+so I'm just going to copy it from the
+previous tool with the exception of this
+time I'm going to assign a Custom Tool
+uh from the browser tool class and this
+is the result that I'm getting with jp4
+I'm just going to copypaste the output
+into my notion notebook so that you can
+see it better I have to say that I'm
+more than pleased with the results it
+would take me at least an hour to read
+latest posts on Lo and Lama then to
+summarize them and take notes but CI
+agents did all of this in less than a
+minute this is a type of research that I
+need to do a few times a day and also
+this is the first time that I managed to
+completely automate part of my work with
+agents one thing that I noticed is that
+sometimes even GPT 4 doesn't really
+follow my instructions there are no
+links to these projects in this output
+and I asked for them but when I run the
+script yesterday the agent successfully
+included all the links and these outputs
+were made on the same day but they're
+formatted differently so output varies
+and agents can act a little bit flaky
+from time to time I also test the Gemini
+Pro which offer offers a free API key
+you can request it through a link that
+I'm going to include in the description
+box essentially you just need to import
+special package from L chain you need to
+load Gemini with this line and then
+you're going to need to assign this llm
+to every agent so Gemini output was a
+little bit underwhelming the model
+didn't understand the task instead it
+wrote a bunch of generic text from its
+training data which is really
+unfortunate so let me know if you run
+into different results I'm I'm really
+curious and now let's talk about price I
+rent The Script many times and as part
+of my experiments but on this particular
+day 11th of January I remember that I
+ran the script four times which means
+that I paid around 30 cents every time I
+ran it so as you can tell it adds up
+pretty quickly and of course this is gp4
+how to avoid paying for all these pricey
+API calls and how to keep your team of
+agents and conversation private yes
+local model mod so let's talk about that
+right now I've tested 13 open source
+models in total and only one was able to
+understand the Tas and completed in some
+sense all the other models failed which
+was a little bit surprising to me
+because I expected a little bit more I
+guess from these local models and I'll
+reveal which ones perform the best and
+the worst but first let me show you how
+to run local models through all llama
+the most important thing to keep in mind
+is that you should have at least 8 GB of
+RAM available to run models with 7
+billion parameters 16 GB for 13 billion
+and 32 GB to run 33 billion parameter
+models having said that even though I
+have a laptop with 16 GB of RAM I
+couldn't run Falcon that only has 7
+billion parameters and vuna with 13
+billion parameters whenever I try to run
+these two models my laptop would freeze
+and crash so something to keep in mind
+if you already installed a llama and you
+downloaded a specific model you can very
+easily instruct crew AI to use local
+model instead of openi with this line
+just import a llama from Lang chain and
+set set the open source model that you
+previously downloaded once you do that
+you should also pass that model to all
+the agents otherwise they're going to
+default to CH GPD among 30 models that I
+experimented with the worst performing
+ones were llama 2 Series with seven b
+parameters and another model that
+performed poorly was 52 the smallest of
+all of them latu was definitely
+struggling to produce any type of
+meaningful output and Fu was just losing
+it it was painful to watch the best
+performing model with seven bilder
+parameters in my opinion was open chat
+which produced an output that sounds
+very newsletter the only downside was
+that it didn't actually contain any data
+from from local llama subreddit which
+was the whole point obviously the model
+didn't understand what the task is
+similarly but with a lot more emojis
+mistol produced a generic but fine
+newsletter this is basically Mistro's
+training data none of these projects are
+companies were part of local subred
+discussions which means that mistal
+agents didn't understand what the task
+is and open hermis and new hermis had a
+similar output all of these outputs are
+are the best attempts they were even
+worst outputs since the results weren't
+really that great I played with
+different prompts variations of prompts
+but that didn't really achieve anything
+also I changed the model file that comes
+with local models played with parameters
+for each of the models and I added a
+system PRT that specifically references
+local llama but again no improvement my
+agents still didn't understand what the
+task is so the only remaining idea I had
+was to run more modles with 13 billion
+parameters which is the upper limit for
+my laptop so I first ran llama 13
+billion chat and text bottles not
+quantized but full Precision models my
+assumption was that these models are
+going to be better at generating a
+newsletter because they're bigger models
+but I was wrong the output didn't look
+better than let's say open chat or
+mistro and the problem was still there
+agents couldn't really understand what
+the task is so I ended up with a bunch
+of generic texts about self-driving cars
+as usual again nothing even remotely
+similar to actual Reddit conversations
+on logal Lama so out of pure desperation
+I tried a regular llama 13 billion
+parameters model a model that is not
+even fine-tuned for anything my
+expectations were really low but to my
+surprise it was the only model that
+actually took into consideration this
+great data from the subreddit it didn't
+really sound like a newsletter or a Blog
+but at least the names were there
+together with some random free flung
+thoughts which I found a little bit
+surprising so there you have it you can
+find my notes about which local modes to
+avoid and which ones were okay together
+with all the code on my GitHub which
+I'll link down below and I'm curious
+have you tried crew Ai and what were
+your experiences like thank you for
+watching and see you in the next one

@@ -1,0 +1,418 @@
+hey welcome back to the code wolf and
+welcome to another video about Azure
+open AI in this tutorial we're going to
+explore how you can wire up your own
+data with Azure open AI so you can build
+chat Bots and other tools that are
+specialized around your own data and
+they're not polluted by more general
+purpose conversations like you might see
+with the standard chat GPT so if we look
+at the sample app that we're going to be
+setting up you can see there's a title
+to ask your own data questions but below
+that it says this chatbot knows about
+Hobbit and Super Mario but not much else
+so ask away so for example if I were to
+say what is azure and hit enter it's
+going to come back with an answer of the
+requested information is not found in
+the retrieve data please try another
+topic now of course the standard chat
+GPT would have all kinds of information
+about that but this bot is just
+configured to know about these two
+things because the data source that I
+set it up with has information about
+those so in contrast to fire to say who
+is Gandalf the famous Wizard and hit
+enter of course it'll say Gandalf is a
+wizard mentioned in the retrieve
+documents but we can do better than that
+we can say who is bbo baggin and it'll
+bring back a more thorough response so
+this only has some basic information
+about The Hobbit it doesn't have the
+entire book or all the extents of lore
+or anything like that obviously it has
+more data about Bilbo than Gandalf or if
+we say what powerups can Mario use since
+this also knows about Mario just one
+more question here you can see it'll
+give us pretty extensive information
+about this and I uploaded a decent
+amount of information about Mario and so
+we get a more uh complete response here
+and the data that I uploaded is also
+semi structured it's not like a complete
+essay or anything like that it's just
+data that I retrieved from various web
+pages on the internet and uploaded it
+into blob storage so we're going to see
+how to set up an Azure open AI service
+wire that up with a search service and a
+blab storage repository to retrieve data
+and see how we can consume those both
+from our own app and custom code and in
+the browser playground it's going to be
+great please hit subscribe to support
+the channel and let's dive in all right
+so let's just jump in and get started
+out in Azure there's two primary
+services that we want to create that
+will be dependencies for this project
+and those are an open AI service and a
+storage account to actually hold the
+data that we want our AI to work with or
+to consume so first let's go out and
+create our open AI service and you can
+get to that by just searching for open
+Ai and picking that from the drop down
+here so let's create our Azure open AI
+service and first just pick the resource
+Group that you want to use and I'll just
+call this uh the code wolf AI or
+something like that and choose the
+standard pricing tier whatever you're
+comfortable with make sure to check out
+the pricing details before you create
+anything and then I'll hit next and all
+this default settings here all these are
+fine and at the end I'll just click
+create and while that's going I also
+have another tab over here to create a
+storage account and this is even simpler
+I already have our code wolf AI Resource
+Group selected again and I'll just call
+this code wolf AI data or something like
+that and I'm just going to choose a
+standard tier uh pretty standard
+settings here and just go ahead and
+create that so we'll give that a moment
+to run and it looks like our Azure open
+AI service already finished so we can
+jump over there and the main thing that
+we're interested in here is these model
+deployments so remember with Azure open
+AI we can deploy different types of
+models that specialize in different
+tasks but those are all handled out over
+in this AI portal over here so let's
+move on out to here and give this a
+second to load and the first thing we'll
+want to do here is say create new
+deployment and this is where we select
+our model that I was just talking about
+and there's different options here
+depending on what your your subscription
+settings are and what you're paying for
+um but GPT 35 turbo is kind of a good
+multi-purpose model this is good for
+language based things like we're going
+to be doing and we can leave that
+setting as is and I'll just call this
+turbo wolf and click create and that's
+going to go ahead and deploy our model
+for us and let's also check on our
+storage account so it looks like this
+finished successfully so this is where
+we're actually going to upload Lo data
+that our model is going to consume so
+let's go out to our containers and let's
+create a new container here called AI
+data or something simple so I'll create
+that and that'll pop in right there so
+let's navigate into that container and
+now let's upload a few documents in here
+and these can be really whatever you
+want but I would recommend picking
+something that has at least a fairly
+significant amount of data in it you
+know maybe 5 to 10 pages of Text data or
+some type of structured or semi
+structure data so let's just browse for
+a couple files here and I have two files
+that we're going to work with one is uh
+Hobbit dxt which is the first chapter of
+The Hobbit so we'll see what it can
+gather about that story for us and the
+second one is actually some fairly
+unstructured data about the Super Mario
+franchise um it's just some data I
+scraped off of some Wikipedia articles
+and things it's valuable information but
+it is very Loosely structured so I'll
+just upload these quick and those will
+load in our container so that's all we
+have to do for storage we're all good to
+go on this front so let's move back over
+to our deployment and refresh this so
+under our deployments here's our turbo
+wolf and from here to set up our demo
+let's go over to chat this is where we
+have our playground where we can
+experiment with different models and
+different settings and talk to our Ai
+and just see kind of How It's behaving
+so by default this is kind of a general
+purpose AI in the chat here so if I were
+to just say hello how are you
+uh you can see we get some general AI
+assistant uh feedback here but we don't
+want a general purpose bot we want our
+specialized bot and for that we can use
+this add data Tab and this is a really
+powerful feature so if we click on this
+add data source it'll walk you through
+this workflow on how to get this going
+so we're going to pick blob storage but
+note that there's lots of other options
+here too so you could use a cosmos DB
+database you could actually just use a
+website directly or you could even
+upload files but uh those will end up in
+blab storage anyway so I just went ahead
+and created a blab storage account ahead
+of time so let's pick that uh AI data
+blab storage account now if we were to
+refresh this it's going to say that we
+don't have an Azure AI search resource
+so let's go ahead and create one of
+those as well this is easiest to do just
+from this AI workflow so that you know
+you're creating exactly what it wants so
+let's use the same Resource Group and
+I'm going to call this uh Cod wolf
+search or something like that and I'm
+going to put this in a region that's
+closer to me now on this pricing tier
+this part is actually kind of important
+for the search service I believe you
+have to be using at least standard for
+this to work uh I don't think the free
+and basic uh have the requirements to be
+able to use this for this AI chat that
+we're building now note that this does
+have a cost associated with it in my
+experimenting if you just create this
+and test with it for a little bit and
+then delete it the cost is very low it's
+nowhere near $250 but don't take my word
+for it make sure you investigate the
+pricing calculator down here and know
+what you're doing before you start
+spending in Azure so I'm going to click
+create here and let that run for a
+minute and that'll validate and while
+that's working uh we can go back to our
+playground here and as we refresh this
+eventually when this finishes um like I
+think it just did here now if we go back
+to our playground you can see that that
+code wolf search is now available for us
+to pick and now we have to give the
+index a name so this just creates a new
+index in our search service that helps
+with data ingestion so I'm going to call
+this code wolf
+index and for the scheduler you can
+really put this at whatever you want if
+you just do it once it'll never run
+again obviously but you also have the
+option to do hourly and daily depending
+on what your needs are but I'm just
+going to leave this at once since we're
+not going to be periodically updating
+this just for the demo and then you have
+to to acknowledge that some costs may
+occur and then let's hit next and we're
+going to set this to keyword search type
+and it'll give us kind of a nice summary
+of what we're doing here and then let's
+say save and close now over on the left
+here you can see there's this ingestion
+process so it's starting to index our
+data and pre-process it and kind of get
+this ready for use by our AI bot so this
+can take a little bit of time it's not
+too bad but I'll just pause here for a
+second while this finishes all right so
+once that finishes indexing let's first
+test out our setup here in the browser
+in this chat playground to make sure
+that things are working as expected so
+over on the right if I were to start a
+conversation here such as what is Google
+the chatbot is not going to understand
+what that is because it only understands
+Concepts that live in our data that we
+uploaded so if I were to switch this up
+and say uh what is Super Mario because
+remember we added a file about that in
+our blab storage you can see now it's
+going to give a more meaningful or
+substantial response now this is great
+we're able to see that everything is
+working but this chat playground isn't
+all that useful in a real world scenario
+when you're building your own app you're
+obviously not going to want to use this
+in this browser tool here so now let's
+start to explore how we would add this
+to a custom app like we looked at in the
+beginning of the video so over in Visual
+Studio I have that app open and this is
+available on GitHub in the description
+and you can actually use this app as if
+is if you just replace some key
+connection configurations which we'll
+look at in a moment now as a side note I
+have a separate video that goes into
+greater depth of how to build an app
+that connects to open AI
+programmatically so in this video we're
+going to just review a few key Concepts
+and then focus on the part that
+configures our API to use our own data
+source so if you're looking for more
+information just check out that other
+video on my channel that'll give you the
+answers you need so here we have a
+fairly traditional razor Pages project
+and we have our form here and this is
+what the user fills out to submit their
+question there's just a regular input
+component here and that binds to a
+property on our model called question
+and then when the response comes back it
+just displays that below the form pretty
+simple here I'm not going to go into how
+razor Pages Works in this video and this
+is a pretty simple flow so that code
+behind lives in our index. CSH html. CS
+file and so if we open this up you can
+see where we're binding that submitted
+question from the user from that input
+field and then this response content
+will hold what comes back from open AI
+as we'll see in a moment so the most
+important part of this setup is the on
+poost method and this is what fires when
+the user submits the form to handle
+their request and run some logic and
+there's just a few key steps to this
+whole setup the first step is to
+configure our open AI client so this is
+the class that will actually go out and
+talk to Azure open AI but to do that we
+need a few configuration points so we
+need the open AI endpoint the key and
+the deployment name and you can find all
+of those easily out in Azure so if I
+were to go out to Azure I have this Cod
+wolf AI Resource Group open so this
+holds all of the different Azure
+resources we created for this to work
+and so if we were to navigate down into
+this uh code wolf AI Service First and
+finding these Keys is pretty easy so if
+we just go into keys and endpoint you
+can copy the key value out of here as
+well as the endpoint so those will map
+to the key and the Endo so that takes
+care of two of those and then the third
+one one is just our deployment name
+which we had called turbo wolf so if we
+go back to our playground and we go over
+to our models or if we go over to our
+deployments then we can see our
+deployment name is Turbo wolf so those
+are the three values you need to set up
+your open aai client and then you pass
+those in when you're creating a new
+instance there so the next part is to
+configure the search service so we have
+to set up a couple configurations here
+so that the open AI client will actually
+use our search Service as its data
+source rather than just the default
+model data so it's a similar deal here
+we just have to set up a few key
+configuration values which are endpoint
+key and index so if we go back out to
+our Resource Group and open up our
+search service on the overview page we
+can find our URL right here so that
+one's pretty easy to grab and then in
+our keys we can grab one of these admin
+keys and that'll be our search key and
+then the final value is this search
+index so if we go back to our indexes
+remember we created this code wolf index
+when we filled out that workflow in the
+browser so all of these key values are
+here now we can then use those
+configuration values to set up our
+search Chat extension configuration so
+this is an object that holds all of
+these uh search configuration points and
+we'll pass that into our open AI client
+when we send out a message and that's
+the final step here right here so we set
+up these chat completion options so this
+kind of builds the object that will be
+sent to open AI to get our data back and
+so first we create a new chat request
+user message so this simulates the
+request from the user and we pass in the
+question that they submitted remember
+this gets bound at the top here when
+they submit the form so there's our
+message getting sent over and then we
+also attach those search configuration
+options so this code wolf config that
+maps to our search configuration up here
+and then finally we also pass in the
+deployment name so it knows which of
+those model deployments to talk to
+remember we also Define that up at the
+top here with our turbo wolf and then
+the final step is just to send that out
+to open Ai and we do that by calling
+this get chat completions and finally we
+pull the response content off of what
+comes back from that and that gets
+displayed in our page here in the
+browser so I already have this running
+and so just as a refresher if we were to
+ask another question such as what type
+of game is Mario and you see we get a
+nice little response here with some
+but if we were to ask something more
+General such as what is
+C it's going to tell us the requested
+information is not available now
+remember this is the most important part
+for our discussion here this is what
+sets the data source as our search
+service if I were to just remove this
+actually and just take out this
+extensions here and then if we were to
+restart the app let's see what this
+gives us now if we lose that search
+configuration so now if I were to say
+what is C ask it the same question you
+can see now it actually gives us a full
+response back just like a standard chat
+GPT prompt would if you want your app to
+only use a specific set of data sources
+you just have to include that
+configuration so I hope you enjoyed this
+video I have more Azure open AI content
+on the way so please hit subscribe to
+support the video check out the other
+two videos on open AI on my channel for
+more information and more detail about
+coding and getting set up with this
+service and I'll see you next time right
+here at the Cod wolf thanks

@@ -6,3 +6,10 @@ pytest
 pytest-cov
 isort
 autoflake
+youtube-transcript-api
+youtube-channel-transcript-api
+pydantic
+google-api-python-client
+qdrant-client
+sentence_transformers
+httpx

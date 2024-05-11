@@ -1,0 +1,50 @@
+hello everyone in this video I'm gonna
+show you how to create a file share on
+your local machine from Azure storage
+files for that the first thing that I
+have to do is creating a storage account
+on Azure I have created this script to
+do that first I'm going to deploy this
+Resource Group and then this storage
+account so let me copy all these
+commands and run on my Azure Powershell
+as you can see the resource is ready now
+let me go to Azure portal and click
+refresh here
+I'm going into the resource Group and
+the search account
+and in that storage account I'm going
+into file shares section here
+and then I'm going to add a file share
+so let me click on ADD
+and I'm going to name it let's say file
+share1
+and I want this to be a hot tier and
+here you will see the maximum iOS and
+egress and Ingress rates and maximum
+capacity and also information about
+large files and all that I'm going to
+click create all right my file shy is
+ready now let me go into that
+and I'm going to click connect as you
+can see I can select a drive letter I'm
+going to keep this as it is and then I'm
+going to use storage account key
+authentication for this you can use
+active directory authentication as well
+I'm going to copy these commands here
+let me click copy now I'm going into
+Powershell and I'm going to paste this
+script here as you can see I have a 5
+terabyte drive mapped to my local
+machine now let me go to Windows
+Explorer and as you can see we have it
+here and now I'm going into it
+and let me add a file to this drive now
+this file is on Azure if we go back to
+Azure portal and click refresh
+as you can see I have just uploaded my
+file to Azure file share hope you
+learned something new today subscribe if
+you haven't already and thanks for
+watching

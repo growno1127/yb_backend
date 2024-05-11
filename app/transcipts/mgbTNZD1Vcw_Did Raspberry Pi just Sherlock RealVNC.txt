@@ -1,0 +1,225 @@
+Raspberry Pi might have just sherlocked
+real VNC what does that mean well if
+you're not familiar with Apple history
+there was an old thirdparty app called
+Watson it was kind of an everything
+search with plugins and stuff Apple
+integrated a new tool right into the OS
+called Sherlock that did essentially the
+same thing can you guess what happened
+to Watson Apple's done that a few times
+now like with growl flux and
+confabulator Raspberry Pi just announced
+connect a VNC service directly
+integrated into Raspberry Pi OS 12 does
+that really make real vinia redundant
+though no not completely I mean
+Raspberry Pi's Ambitions for connect are
+a lot smaller skill Raspberry Pi
+launched P OS 12 Bookworm in October
+last year they switched from the old X11
+window system to a more modern setup
+using whand but because real VC was
+built for X11 it broke there's a way to
+switch back to X11 to get real VC
+working but after 6 months realvnc still
+doesn't work with the default setup
+realvnc is a handy way to remote control
+computers like my dad uses it he has a
+Raspberry Pi at each of his remote tower
+sites so he can monitor transmitter
+equipment through their web uis it's
+relatively secure and it means he
+doesn't need any sight tosite vpns just
+a pi running real VNC users like my dad
+started buying Raspberry Pi 5S or
+upgrading to bookworm on their Pi 4S and
+quickly found out real vinc didn't work
+anymore at least out of the box so
+instead of waiting for real VC Raspberry
+Pi launched their free connect service
+it's in beta right now and it doesn't
+sound like there's a plan to monetize it
+at least not yet I've been testing it
+out for a few months and while it works
+great it's not a direct replacement for
+real VNC how do I know that well take my
+D again he uses it with pies sure but he
+also has other computers he manages like
+Macs and windows PCS he has a multi-user
+plan and uses some mobile app features
+that are hard for Raspberry Pi connect
+to add since it's just a web UI
+Raspberry Pi connect is more limited but
+that's not a bad thing in fact I think
+that's good because the more it would do
+the further the soft Ware team at
+Raspberry Pi would be stretched to keep
+it stable and secure building VNC
+software shouldn't take precedence over
+making Linux run great on the pi or
+making the Pico easy to develop for they
+keeping connect really trim it only runs
+on pios on newer pies and it doesn't
+have any VPN features SSH access or
+mobile apps it's just VNC and a web UI
+it's built on top of way VNC a solid VNC
+server in my testing the web UI runs
+great on any modern browser I've tested
+it on my Mac window Windows iPad even my
+iPhone there are a few quirks and I
+still hope real VNC gets full Wayland
+support but it's nice having connect
+setup is easy you create a Raspberry Pi
+ID install rpy connect and log in
+there's a little widget in the system
+tray and you can go to connect.
+raspberry pi.com on any device to
+connect to any PI you set up I've tested
+with a pi5 and a pi4 and I've been
+testing from home from my car and from
+other networks the way it sets up the
+connection it tries to do a direct
+peer-to-peer connection but sometimes it
+connects through through a relay server
+it doesn't stream all the data through
+that relay but it will hold the
+connection alive through it like when
+you're connecting with cgnat from a cell
+phone or Wireless isbs and it's fast
+enough for me I mean here on the land of
+course it's going to be buttery smooth
+but even at home I get acceptable
+latency you can ignore how slow YouTube
+is though this this is on my Pi 4 and
+YouTube is just kind of like that on the
+pi4 but generally everything else is
+Snappy and there are some basic remote
+access features like you can copy text
+from the remote P or paste text to it
+and there are some modifier Keys like
+control alt and Escape down at the
+bottom there isn't a way to get it to
+pop the onscreen keyboard on my iPhone
+or iPad so Mobile use is limited but it
+does work with a Bluetooth keyboard if
+you have one of those around the screen
+resizes to fit your browser window by
+default but you can also set a
+resolution or if you have a monitor
+plugged into the pi it'll keep that
+resolution in fact in some of my testing
+I plugged in one of these an HDMI Ed
+emulator that way I could emulate having
+a physical monitor plugged in now one
+limitation you can't run P connect on a
+p running pyos light it has to be the
+full P version with a desktop
+environment and you also need to have
+Auto login enabled at least right now
+that might change I mean remember this
+is a beta so there are some limitations
+with it these are all pretty ideal
+conditions though but what happens in
+the worst case like when I'm out
+Tethered to my mobile phone with a less
+than perfect connection I drove out to a
+park and tethered my computer to my
+phone's internet connection through AT&T
+and out here at least the connection is
+pretty bad it's like a one one or two
+megabits per second up and down 500
+milliseconds to a full second of latency
+so practically the worst case scenario
+for an urban environment and uh things
+still work it requires a lot of patients
+to use it this way it it's much more
+pleasant to use it on a wired connection
+at home or somewhere with a better
+internet connection uh but it works and
+if you're if you're in a pinch and you
+need to do something on your pie at
+another location this could work um a
+couple things I I noticed though one is
+that it says that both your device and
+browser chose to use connects relay so
+that means that right now the the
+metadata for this connection is going
+from here in St Louis up to London where
+they have their main server and then
+back down to St Louis through AT&T's
+wireless network so that might add a
+little bit of extra time too I think
+they might have plans on having more
+relay servers around the world maybe
+maybe not uh but that's one thing to
+keep in mind uh when you're on a
+wireless connection like this and it
+uses cgnat or whatever technology to to
+make that connection uh the other thing
+that I think would be nice is if they
+had the ability to turn off all the
+animations in the UI so whand on the pi
+has like it zooms in and zooms out when
+you close windows and that's just
+wasting bandwidth because when I close
+the terminal window and it zooms out it
+has to send extra frames for that and it
+just it just bogs things down a little
+bit so it'd be cool if you could disable
+that and when you close the window it
+just disappears right away uh but
+otherwise in a pinch this works I
+wouldn't recommend it generally though
+and and this isn't just exclusive to
+connect this is a problem with any uh
+desktop sharing thing when I share my
+Mac desktop over over the VPN it does
+the same thing when you're on a slow
+connection that's just it's the nature
+of the beast when you're sharing video
+over a really slow connection but it it
+works it works you know that's the main
+thing uh it's just patience patience is
+a very important virtue to have when
+you're working over a 4G or 5G so Pie
+connect it can get confused if you have
+things like multiple monitors but you
+can work around that in settings realvnc
+handles situations like that better just
+like it works on mobile a bit nicer but
+in the end I think one thing a lot of
+people might wonder about is trust can
+you trust Raspberry Pi's service since
+it controls remote access to your Pi I
+mean I do but I'm a pretty trusting guy
+I think if you have deeper requirements
+you would probably still want to run
+your own sight tosite VPN anyway but
+besides that one nagging question in the
+back of my mind is whether it's going to
+stay free that wouldn't be a question
+except for the fact that Raspberry Pi is
+considering an IPO something I covered a
+few months ago if Raspberry p goes
+public what's to stop someone from
+coming in later and monetizing connect I
+hope it doesn't happen but if it does
+that' be annoying maybe a paid tier for
+advanced features someday but then
+they're getting into real VNC territory
+and I mentioned I think they should keep
+it simple that also helps keep it low
+cost for them to run which helps keep it
+free but am I being overly cautious I
+hope so raspberry pies had a decent
+history with their open source work so
+it would be cool if they eventually open
+up all the code behind the service too
+but even if not it's nice to have more
+options especially simple ones that are
+quick and easy to get up and running if
+py connect meets your needs great if not
+there's still a place for real vanc it
+hasn't been sherlocked yet until next
+time I'm Jeff Kling

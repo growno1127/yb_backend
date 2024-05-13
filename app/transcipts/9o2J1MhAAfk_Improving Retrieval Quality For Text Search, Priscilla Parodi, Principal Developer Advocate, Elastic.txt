@@ -1,0 +1,609 @@
+thank you thank you all for joining me
+today um as mentioned I think it was
+well uh started here with my
+introduction but uh my name is Priscilla
+Pari this is my email address so if you
+have any question feel free to send me
+an email this is not a problem at all
+this is my LinkedIn profile so basically
+the name and first name and last name so
+feel free to add me there to connect to
+send questions uh and to talk about
+anything Tech related to besides elastic
+of course and the content of this
+presentation as mentioned of course
+we'll have time upstairs so feel free to
+ask me questions there if you have time
+I can also answer some questions here
+but besides that use a social media too
+because I'll be there all the time
+so let's make it
+work okay
+so today as mentioned we are going to
+talk about improving retrieval quality
+for
+search and this is the agenda so we'll
+start by revisiting Tex search known as
+lexical search then we'll talk about
+Vector search I'll introduce it to you
+uh then semantic search with dense
+vectors then with sparse vectors more
+specifically learn it sparse retrieval
+and then finally we'll talk about High
+hybrid
+retrieval but first and before we get
+started what is
+elastic do any of you know what elastic
+is what elastic search
+is cool good percentage here so let me
+explain here for the
+others elastic is a search company and
+usually when I tell people that elastic
+is a search company they come up with
+this search box because of Google and
+all of the examples that we have and
+actually this is a great front end and a
+great example here but in fact search
+goes beyond that think of uber for
+example which is a user of elastic so of
+course you have the search box at first
+where you type the address but besides
+this if you think about the core of uber
+when it comes to search these are
+actually the GPS
+coordinates think of a possible traffic
+or delay or even when you start when you
+find the driver like the match it should
+be perfect it should be the one that
+that is the uh close to you because
+otherwise it will take a very long time
+and it won't work for the driver and
+also for you so this is a important
+Point
+here Tinder is another great example of
+searching and of the search experience
+because you do that by yourself when you
+say yes or no to people what you're
+doing is you are futuring a data store
+you're futuring a database so this is
+another great example beond the search
+box search is a constant it's a
+foundation it's everywhere I like to say
+that well if you have data you can
+search and if you do it well it will be
+even better so think about your logs
+metrics traceability of your application
+we are talking about AI here but there
+is the observability aspect of it
+because there are logs for it right and
+it need to work and work really well
+because you need to uh have all of your
+back end also working and everything
+that is the background to so this is
+really
+important Let's uh reveal here a typical
+search architecture with elastic search
+before we proceed so as expected we
+would have the ingestion part here we
+have 200 plus connectors so we have a
+lot of options here but agents web
+crawler if you want to so first part to
+put data into elastic so to get data
+collect data from somewhere then if if
+you want you can enrich data so you can
+use log stash created by elastic ETL any
+other that you want you can also edit
+here or use it directly anyways if you
+prefer uh it's completely restful you
+can also consume it for there and then
+your go here is to store data into
+elastic search so basically we call this
+and revisit in for the others that are
+not user to elastic we call this
+indexing data into elastic search so you
+store your data into elastics are this
+way and your index will in fact be a
+collection of documents and these
+documents a collection of fields with
+many field types here so here we'll
+cover some of this actually three
+different field types but this is where
+your data will live and then finally
+with the data into elastic search we
+able to perform search so this is the
+last step here uh you can use kibana too
+you can create awesome dashboards you
+can generate PDF reports alerts uh
+manage the health of all of your stack
+and everything but uh as mentioned it's
+completely restful so uh you have your
+documents into elastic search and you
+can just consume it from there and
+customize your web app or your mobile
+app or what you're doing with
+it let's revisit Tech search then the
+lexical search so this is how it works
+um this is a sentence and as an example
+here of course the best way to secure
+elastic search so what happens here is a
+process called tokenization which is
+basically to divide your sentence into
+words here I'm using I'm not doing
+anything fancy I could add filters for
+example I'm not uh syams to I'm not I'm
+just using a simple stop word removal um
+a simple analyzer and enough nothing
+else here so as you can see we have one
+two three four four token in this case
+to four terms and then with it we
+perform the lexical matching so we use
+the BM 25 ranking function which is a
+Formula basically and how it works well
+it will measure the relevance based on
+the frequency of these terms that you
+just saw and the r of the terms that you
+have all considering all of your
+documents this is the search
+architecture Revisited for this case
+specifically
+so basically you have the app data you
+store this into elastic search we are
+talking about text here so it will be a
+text field in this case for full text
+search and then the other side you have
+the query so uh the question that the
+user have in this case and then with the
+text from the other side too you perform
+the bm25 search in order to find the
+relevant the most relevant results
+here text search is useful for many use
+case I think we've been talking about
+text and full text search for a very
+long time so this is really popular we
+have this in different apps here I think
+we are kind of like us it to uh and
+that's because it's well understood it's
+interpretable as we saw there are terms
+there are filters synonms you know the
+synony so it's kind of like you can
+check it uh the terms that you have the
+terms that were generated the formula
+itself you can check it too so it's
+pretty much uh simple to work with it
+and we've been working with it for a
+very long time but where it may fall
+short here there is a point one of them
+is the vocabulary mismatch so in this
+case for example there are some research
+that says that same specialist from the
+same area they can call the exactly the
+same thing describe exactly the same
+thing in using different words I think I
+do this all the time like I use
+different words to describe say we do
+this all the time and this is a point
+here as you saw it's a literal match
+isn't it exact match you will miss it
+there is no way unless you know all of
+the possibilities all of the variations
+all of the chains and the people that
+are going to uh query your data it will
+be very difficult and you probably miss
+uh a good amount of information and you
+won't find the matches so this is a
+problem another Point here is the
+context what we call the semantic
+mismatch if I say here that that um
+apple is going
+down I think you probably know that I'm
+probably talking about the stocks right
+I'm not talking about the
+fruit my mom would probably think that
+I'm talking about the fruit so she would
+miss this and this is a problem too
+because she wouldn't find the
+match so this is something for Tech
+search that we need to pay
+attention users expect more front search
+we expect Mor front search so we want to
+retrieve results based on intent on
+context on everything that comes with it
+right we want it
+work and then Vector search enables
+semantic
+search what is Vector search then the
+thing that people are talking about all
+the time so basically is search based on
+Vector representation the embedding so
+this is a simple flow here you have the
+documents you generate the embeddings in
+this case the text embeddings but of
+course um it can be for other kind of
+data image for example uh and then you
+perform Vector search to find the top K
+number of nearest neighbors so in this
+case let me explain how it works so the
+beddings represent your data here we
+have an example of onedimensional vector
+so what we have here are two different
+aspects of the data so ranging from
+realistic to cartoon and we have
+something that I hope is a real elk or
+it should be and the other side we have
+a cartoon version of this elk I like to
+call this the student elk um so here we
+have different
+aspects and then the dimensions multiple
+Dimensions here will will represent
+different aspects of the data so I am
+also adding here Mom and bird and the
+same thing with
+all so in this edding space similar data
+are grouped together so as you can see
+the student elk they have like I have
+like more of this so he has friends now
+uh same for the all U Birds too and here
+it
+goes in the end when you perform Vector
+search it will rank objects by
+similarity to the query so here we have
+the student elk again and I am
+performing here the vector search so
+this is the query as you could see the
+vectorized which means the vector
+representation of the student elk is
+really close to the most relevant
+results that we have which are actually
+the other cartoon versions of uh the elk
+so in the EMB space the query and the
+data itself that are relevant are really
+close to each other and this is how it
+works what I just said in another way
+here this is the conceptual architecture
+so you have the vector representations
+of your documents and then the other
+side you have the query and you
+vectorize this query you generate the
+embedding for the query and then once
+you have the two of them you perform
+Vector
+search well I missed something here
+right how to generate context aware text
+embedding otherwise it wouldn't work
+like that so this is a point here and
+you apply natural language processing
+model a Transformer model so basically
+with elastic you can import and deploy
+propriatary or thirdparty MLP models so
+you basically if you want to use huging
+phase which is uh index example for
+example uh huging phase you select the
+model you cop the name you use our
+client the python client that we have
+and then by selecting the task type text
+embeded you are able to import this into
+elastic search so you just deploy it and
+use it from there uh if you have your
+own model you can do this so this is
+another possibility and then with it it
+just need to be a pie torch model and
+use the client directly and import this
+into elastic
+search when it comes to generating
+embeddings with elastic you have two
+options so you can generate embeddings
+in inside elastic search which is
+basically what we just saw you have the
+app data you have it stored into elastic
+you need to generate the embedding so
+you do this before storing this for an
+inference Pipeline and then the same
+thing happens for the query because you
+need to generate the embeddings too so
+you do this into elastic search you
+perform inference into elastic
+search or outside which is basically you
+just come up with the vectors which is
+also possible
+I'm waiting for the picture
+here took the photo okay um then dense
+Vector retrial what we just saw performs
+really well and this is cool because as
+you could see it takes into account
+semantic of course if you have a great
+model if it will be even better if it's
+not working you switch models and use
+another one so here it goes but it takes
+semantic into account which is really
+good and important so it can beat other
+approach for semantic search for Tech
+search as we saw earlier because of
+semantics but where it may fall short
+here domain adaptation so if you work
+for a very specific industry and you
+have a lot of uh keywords or terms or
+ways of saying things that are very
+specific I'm pretty sure it will be hard
+to find a perfect model of course
+uh you can uh find it your model you can
+uh retrain the model and of course get B
+better results improve it but in the end
+it will be more steps so you just need
+to make sure if this is what you want um
+there are other Alternatives like a rag
+architecture can provide context and
+here it goes but again more steps so we
+just need to know if it makes sense and
+the other point here is that it's not
+easily interpretable so as we saw the
+exact match with the lexical matching
+the terms and then you can just check
+well there's something missing so I add
+a new cam here and I will try to fix
+this well this is not the case here
+exactly if there is something if it's
+not working you will probably check the
+model itself and see the accuracy of it
+the data set that it got trained and all
+of it so this is a point here it's not
+something that you just go there and fix
+it U really quick so this not a
+point here is something that I like to
+talk about usually when I tell people
+about let me even go back to the other
+slide here before the spoiler but
+usually when I tell people about
+semantics they want to do this and then
+when I tell people about all of these
+points here domain adaptation not easily
+interpretable they were they ask me well
+is there another way of me because I
+like of me doing this because I like the
+things of having the term matching I
+like the things of using inverted index
+bm25 uh two so there way to at least
+have like a bridge between the two
+something that I can do with a sparse
+retrieval another kind of possibility
+here with inverted index too so in this
+case it's not bm25 but there is
+something it's learned sparse retrieval
+so now yes it's an alternative approach
+for semantic search and it will provide
+tradeoff over then retrieval and
+traditional sparse retrieval methods as
+we saw earlier with bm25 so this is a
+good one to talk about and what it does
+is something called term expansion so
+basically it will identify the
+contextual importance between the terms
+it is pre-trained so it will identify
+the the relevance the importance of the
+terms and then it will utilize this
+knowledge to improve the sparse
+embeddings let's consider this example
+here we have a query um comfortable
+furniture for a large balcony let's
+consider that this is a e-commerce
+website and the person is looking for it
+this is one document of course you would
+have more otherwise this is a match uh
+but then the document say says is a
+comfortable and stylish Garden Lounge
+set including a sofa chairs in a side
+table for outdoor relaxation well this
+is definitely a comfortable furniture
+for a large balcony so I mean it works
+but at the same time all of this
+description and everything from it all
+the only match that we would have with
+lexico search is
+comfortable so we we will probably miss
+this right and then with term expansion
+on the other hand you have more matches
+so for comfortable you would have
+landscape relax calm sleep for Furniture
+sofa couch chairs and here you go so you
+have more terms here which in the end as
+you can see we have more matches so now
+this document I can see many terms here
+from what I
+had elastic provides a beauty option for
+this approach so this is something
+elastic provide this pretrained model
+and to use that you just download the
+model and then you start the deployment
+and it is like this and that's
+all Lear sparse retrieval is an
+improvement over tax search the lexical
+search we we saw
+initially uh well where it works here
+it's well understood it's interpretable
+same kind of idea here because you have
+the tokens you can see a list of tokens
+you can check it so it's good for even
+like if you're already using bm25 and
+like this kind of search that's fine if
+you're use a to SP retrieval that's
+great too uh but at the same um and also
+the vocabulary and the semantic matching
+which is something that it provides so
+it's an improvement here but here uh
+where it may fall short in this case is
+that as expected you would have a larger
+index because you have more tokens you
+have more terms of course I can say the
+same for dense retrieval too if you have
+high
+dimensionality but uh comparing
+specifically to lexico matching then you
+can see that you have more terms in the
+end another point I can mention is that
+dense Vector retrieval can outperform
+learned sparse retrieval for semantic
+search if you do uh if you find the
+model for example or if uh there are
+many models out there so there might be
+something that will work for uh your use
+case and it will be good for example so
+it really depends so but you can
+definitely find a good model uh when it
+comes to Dan Cho so this is something to
+keep in mind
+well is a combined approach a better
+idea this is a good point here sometimes
+we just choose one right and we think
+that this is the answer I'll just choose
+uh one of this options she mentioned and
+then that's it well it depends because
+there are use cases that we work better
+with one and another use case and we
+work better with another kind of
+retrieval so it's really it it is really
+something that you see in practice that
+you test and you will know what makes
+sense but what is possible and elastic
+in this case offer two options here for
+you to do this is to perform hybrid
+retrieval because then you can take
+advantage of both words the the lexical
+search word and the vector word with
+sparse and then embeddings so to do that
+you with elastic you have like this two
+options the linear combination which is
+basically a manual boost you just say
+well this scoring method is specifically
+um is relevant like it's more relevant
+than the other and and here it goes and
+you have reciprocal rank Fusion or or F
+or lots of papers comparing both and
+then you can see what makes sense for
+use case most of the time is or or F so
+you can just write out and see what
+works but in this case it just instead
+of you manually boosting it and say
+manually boosted is basically like
+multiplying by so instead of doing this
+you just have uh a blend of the ranking
+methods everything you've heard here is
+powered by elastic search relevance and
+Gene so we offer a vector database or or
+F so we can perform hybrid search here
+the ability to host your Transformer
+model as we saw earlier elastic
+propriatary ml model as you talk to
+integration with other third-party MLP
+uh models uh Transformer models
+specifically open AI for example and
+integration with other thirdparty
+tooling like Lang
+train my invite here for all of you is
+to join the lastic community so first
+link here the search labs this is really
+good and we are updating with lots of
+demonstration open repository open coou
+so you can just navigate and see if
+there is an example so we have many uh
+you can try it free on elastic Cloud so
+uh there is a free trial available just
+uh go there and check it out and of
+course if you have questions we have a
+great community so it's really nice to
+answer your questions as menion so just
+let us
+know thank you and um before I finish
+this uh we will have the session
+upstairs so if you have any questions
+you can also go there I think we have
+time probably for one uh question here
+so just let me know we have the booth
+there so if you've not been there uh we
+have some demonstrations comparing this
+retrieval methods so it's nice you can
+see the difference using one or the
+other and again this is my contact info
+and the C code this for my LinkedIn
+profile too so just uh feel free to
+connect there that's it
+um I
+have okay so any
+questions you have one um is there a
+microphone no he will ask the question
+and you
+question
+I don't know if I you
+repeat okay performance you mean because
+you would need to store both right yes
+so okay so he's asking about uh the
+performance because for example for
+hybrid if you want to do both like bm25
+and the dense uh Vector search for
+example you would have to store both so
+you have like the two Fields uh two
+different fields for the same kind of
+data for example and it will be more
+than you would have if you just have one
+so this is the point of of course like
+the tradeoff I would say uh when you
+are I would say like selecting your
+method for example but in the end uh
+most of the times it's in fact good to
+have the lexical matching even as a
+filter because uh in the end if you
+perform lexical matching and you filter
+your data and you already have like less
+uh vectors to search within then in the
+end you improve the performance so it's
+it's something that of course uh you
+need to take into account because You'
+have both but at the same time most of
+the people already already are in the
+the text as is so it it can make sense
+like for the use case to to do both and
+then to use bm25 as also besides of
+course being relevant for the end result
+but as also a way of making sure there
+is enough filters and enough layers uh
+for the
+vector um you
+can
+ask
+okay to have less dimensionalities you
+mean okay just start with small pieces
+instead of like the entire document if
+it affects the performance all right
+so definitely you you can like just add
+small pieces but the point is if it
+describes everything that you want to so
+it can affect the performance or not it
+depends on the on your approach on on
+what is your goal and if it's covering
+everything but it's definitely use case
+that's out there and there's definitely
+people doing this too so there's no like
+um I don't have like one answer for this
+it's it depends but of course if it's
+doing what it needs to then that's
+okay how you like if you have something
+domain specific like the term expansion
+dictionary manage that um for term
+expansion you mean the domain is
+specificity for um I guess like adding
+additional terms to that term expansion
+yeah so in this case this is a
+pre-trained model so it's uh s is
+basically so it's called Elser so you
+can uh look for it and uh you can try it
+out we are improving it very often so we
+will launch other versions too so this
+is something that we want to keep
+investing in and something that we are
+also looking for feedback uh but this
+would be like that's why I mentioned
+this as a trade-off because in this case
+you would have it uh as a butine
+model thank you okay cool so I'll be
+there upstairs if you have more
+questions just let me know otherwise
+thank you so much for your time
+today

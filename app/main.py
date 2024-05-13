@@ -6,7 +6,8 @@ from youtube_channel_transcript_api import YoutubeChannelTranscripts
 from pydantic import BaseModel
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from qdrant_client import QdrantClient
+from qdrant_client import QdrantClient, models
+from qdrant_client.models import Filter, FieldCondition, Range
 from sentence_transformers import SentenceTransformer
 from config import (
     COLLECTION_NAME,
@@ -74,6 +75,7 @@ class Item(BaseModel):
 
 class SearchItem(BaseModel):
     search: str
+    search_channel: str
 
 def get_video_data(api_url):
     try:
@@ -196,22 +198,33 @@ def save_to_qdrant(video_id, title, transcript, vector, details, extra, channelN
         print(f"Error in vector data: {e}")
         raise
     videos_id = string_to_int_id(video_id)
-    date_obj = datetime.strptime(details["published_at"].replace('Z', ''), "%Y-%m-%dT%H:%M:%S")
-    published_at = date_obj.strftime("%Y-%m-%d %H:%M:%S")
-    if(len(channelName)==0):
-        channel_name=details["channel_title"]
+    if details:
+        date_obj = datetime.strptime(details["published_at"].replace('Z', ''), "%Y-%m-%dT%H:%M:%S")
+        published_at = date_obj.strftime("%Y-%m-%d %H:%M:%S")
+        desText = details["description"]
+        comCount = details["comment_count"]
+        favCount = details["favorite_count"]
+        likCount = details["like_count"]
+        viwCount = details["view_count"]
+        channel_name = details["channel_title"]
     else:
-        channle_name = channelName
+        published_at = ""
+        desText = ""
+        comCount = ""
+        favCount = ""
+        likCount = ""
+        viwCount = ""
+        channel_name = channelName
     payload = {
         "title": title,
-        "channel_title": channle_name,
+        "channel_title": channel_name,
         "transcript": transcript,
-        "description": details["description"],
+        "description": desText,
         "published_at": published_at,
-        "comment_count": details["comment_count"],
-        "favorite_count": details["favorite_count"],
-        "like_count": details["like_count"],
-        "view_count": details["view_count"],
+        "comment_count": comCount,
+        "favorite_count": favCount,
+        "like_count": likCount,
+        "view_count": viwCount,
         "extra": extra
     }
     data={
@@ -277,7 +290,8 @@ def build_prompt(question: str, references: list) -> tuple[str, str]:
         favorite_count = reference.payload["favorite_count"].strip()
         like_count = reference.payload["like_count"].strip()
         view_count = reference.payload["view_count"].strip()
-        text=f"title={title} description={description} channeltitle={channeltitle} transcript={transcript} published_at={published_at} comment_count={comment_count} favorite_count={favorite_count} like_count={like_count} view_count={view_count}"
+        extra = reference.payload["extra"].strip()
+        text=f"title={title} description={description} channeltitle={channeltitle} extra={extra} transcript={transcript} published_at={published_at} comment_count={comment_count} favorite_count={favorite_count} like_count={like_count} view_count={view_count}"
         print(text)
         references_text += f"\n[{i}]: {text}"
     prompt += (
@@ -290,8 +304,11 @@ async def query_from_qdrant(item: SearchItem):
     similar_docs = qdrant_client.search(
         collection_name=COLLECTION_NAME,
         query_vector=model.encode(item.search),
-	    query_filter=model.Filter(
-            must=[model.FieldCondition(key="channel_title", range=model.Range(gte=item.search_channel))]
+        #query_filter=models.Filter(
+        #    must=[models.FieldCondition(key="channel_title", range=model.Range(gte=item.search_channel))]
+        #),
+        query_filter=models.Filter(
+            must=[models.FieldCondition(key="channel_title", match=models.MatchValue(value=item.search_channel))]
         ),
         limit=3,
         append_payload=True,
@@ -369,5 +386,11 @@ async def root(item: Item):
                     print("Unable to download transcript.")
                     return {"message": "Unable to download transcript."}
             else:
-                print("Invalid YouTube URL.")
-                return {"message": "Invalid YouTube URL."}
+                if len(item.extra)==0:
+                    print("Invalid YouTube URL.")
+                    return {"message": "Invalid YouTube URL."}
+                else:
+                    vector = adjust_vector_dimensions(item.extra)
+                    video_details = extract_video_details("")
+                    save_to_qdrant("", "", "", vector, video_details, item.extra, item.channelName)
+                    return {"message": "success"}

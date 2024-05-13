@@ -197,7 +197,10 @@ def save_to_qdrant(video_id, title, transcript, vector, details, extra, channelN
     except ValueError as e:
         print(f"Error in vector data: {e}")
         raise
-    videos_id = string_to_int_id(video_id)
+    if len(video_id)==0:
+        videos_id = string_to_int_id(channelName+extra)
+    else:
+        videos_id = string_to_int_id(video_id)
     if details:
         date_obj = datetime.strptime(details["published_at"].replace('Z', ''), "%Y-%m-%dT%H:%M:%S")
         published_at = date_obj.strftime("%Y-%m-%d %H:%M:%S")
